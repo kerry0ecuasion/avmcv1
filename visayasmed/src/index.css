@@ -1,0 +1,385 @@
+@import "tailwindcss";
+
+/* Tailwind v4: Use .dark class for dark mode instead of prefers-color-scheme */
+@custom-variant dark (&&:where(.dark, .dark *));
+
+/* Theme transition - smooth color changes when switching modes (0.2-0.3s) */
+html {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Ensure the app root can host full-bleed backgrounds and fill viewport */
+html, body, #root {
+  height: 100%;
+  min-height: 100%;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+}
+
+/* Apply smooth transition to theme-aware elements */
+.theme-transition {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.8s ease-out;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-shake {
+  animation: shake 0.5s infinite;
+}
+
+.animate-subtle-shake {
+  animation: shake-subtle 3s ease-in-out infinite;
+}
+
+@keyframes shake-subtle {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: rotate(-2deg); }
+  20%, 40%, 60%, 80% { transform: rotate(2deg); }
+}
+
+@keyframes fadeZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.08) translateY(6px);
+    filter: blur(2px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.0) translateY(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.0) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-fadeZoom {
+  animation: fadeZoom 0.9s cubic-bezier(.22,.9,.28,1) both;
+}
+
+/* Core Values - Floating animations with staggered timing */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float-1 { animation: float 4s ease-in-out infinite; }
+.float-2 { animation: float 5s ease-in-out infinite 0.3s; }
+.float-3 { animation: float 4.5s ease-in-out infinite 0.6s; }
+.float-4 { animation: float 5.5s ease-in-out infinite 0.2s; }
+.float-5 { animation: float 4.2s ease-in-out infinite 0.5s; }
+.float-6 { animation: float 5.2s ease-in-out infinite 0.8s; }
+
+/* About Section - Full Viewport Background */
+#about {
+  /* Ensure full coverage of viewport */
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  
+  /* Background image optimization */
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Prevent horizontal scroll on mobile devices */
+@media (max-width: 1024px) {
+  #about {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+}
+
+/* Utility: make any section or element full-bleed (edge-to-edge background) */
+.full-bleed {
+  width: 100vw !important;
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+}
+
+/* Mobile optimization - ensure background scales correctly */
+@media (max-width: 768px) {
+  #about {
+    background-attachment: scroll;
+  }
+}
+
+/* Ensure content is readable on all backgrounds */
+#about .absolute.inset-0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Enhanced Typography */
+.letter-spacing-wide {
+  letter-spacing: 0.025em;
+}
+
+/* Professional Medical Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Healthcare-focused color palette - Medical blues and professional grays */
+:root {
+  --medical-blue-light: #0369a1;
+  --medical-blue-dark: #075985;
+  --care-neutral: #475569;
+  --trust-gray: #64748b;
+}
+
+/* Smooth font rendering for professional appearance */
+body, html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Professional paragraph spacing */
+p {
+  line-height: 1.75;
+}
+
+/* About section professional styling */
+#about h2 {
+  letter-spacing: 0.05em;
+  font-weight: 300;
+}
+
+#about h3, #about h4 {
+  letter-spacing: 0.02em;
+}
+
+/* List styles for commitment items */
+ul li {
+  line-height: 1.8;
+}
+
+/* Professional Hover Effects & Transitions */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out;
+}
+
+/* Card hover effects - subtle elevation and glow */
+.professional-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.professional-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced button styles */
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Professional link styles */
+a {
+  transition: all 0.3s ease;
+}
+
+/* Icon animations */
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulse animation for important elements */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient text for headings */
+.gradient-text {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-dark {
+  background: linear-gradient(135deg, #1e40af 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Professional focus states for accessibility */
+*:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+}
+
+/* Enhanced spacing utilities */
+.space-y-relaxed {
+  --space-y: 2rem;
+}
+
+/* Professional card borders */
+.card-border {
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.card-border-dark {
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
