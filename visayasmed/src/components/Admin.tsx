@@ -1,13 +1,25 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
 
 const Admin: React.FC = () => {
-  const { logout } = useAuth();
+  const { logout } = useAdminAuth();
+  const navigate = useNavigate();
+
+  const handleDashboardClick = () => {
+    navigate('/admin/dashboard');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 transition-colors duration-300">
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-300">
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={handleDashboardClick}
+            className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded transition-colors duration-300"
+          >
+            Go to Dashboard
+          </button>
           <img src="/VMlogo.png" alt="VM Logo" className="h-12 w-12" />
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Admin Portal</h1>
         </div>

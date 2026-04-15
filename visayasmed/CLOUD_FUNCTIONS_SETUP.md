@@ -43,10 +43,10 @@ After deployment, you'll see URLs for each function:
 ✔  Deploy complete!
 
 Function URL (uploadDoctorProfilePhoto): 
-https://us-central1-visayasmed-53bbc.cloudfunctions.net/uploadDoctorProfilePhoto
+https://us-central1-visayasmed-82274.cloudfunctions.net/uploadDoctorProfilePhoto
 
 Function URL (generateSignedUrl): 
-https://us-central1-visayasmed-53bbc.cloudfunctions.net/generateSignedUrl
+https://us-central1-visayasmed-82274.cloudfunctions.net/generateSignedUrl
 ```
 
 ### Step 3: Update Environment Variables
@@ -54,7 +54,7 @@ https://us-central1-visayasmed-53bbc.cloudfunctions.net/generateSignedUrl
 Add the Cloud Function URL to your `.env` file:
 
 ```
-VITE_CLOUD_FUNCTION_URL=https://us-central1-visayasmed-53bbc.cloudfunctions.net/uploadDoctorProfilePhoto
+VITE_CLOUD_FUNCTION_URL=https://us-central1-visayasmed-82274.cloudfunctions.net/uploadDoctorProfilePhoto
 ```
 
 ### Step 4: Configure Firebase Security Rules (Optional but Recommended)

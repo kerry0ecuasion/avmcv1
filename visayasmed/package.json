@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:backend": "node chatbot-backend.js",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:backend\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "firebase": "^10.14.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -18,6 +23,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",

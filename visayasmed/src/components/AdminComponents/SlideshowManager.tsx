@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { db, storage } from "../../firebase";
 import { collection, getDocs, updateDoc, doc, deleteDoc, addDoc, query, orderBy } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -53,52 +54,69 @@ const SlideshowManager: React.FC = () => {
         }
     };
 
+    const handleImageUrlChange = (value: string) => {
+        setFormData(prev => ({ ...prev, image: value, file: null }));
+        setPreview(value);
+    };
+
     const handleSave = async () => {
         if (!formData.title) {
             alert("Please enter a title");
             return;
         }
 
-        try {
-            setLoading(true);
-            let imageUrl = formData.image;
+        const maxRetries = 2;
+        let attempt = 0;
 
-            // Upload new image if provided
-            if (formData.file) {
-                const storageRef = ref(storage, `slideshows/${Date.now()}-${formData.file.name}`);
-                await uploadBytes(storageRef, formData.file);
-                imageUrl = await getDownloadURL(storageRef);
+        while (attempt <= maxRetries) {
+            try {
+                setLoading(true);
+                let imageUrl = formData.image;
+
+                // Upload new image if provided
+                if (formData.file) {
+                    const storageRef = ref(storage, `slideshows/${Date.now()}-${formData.file.name}`);
+                    await uploadBytes(storageRef, formData.file);
+                    imageUrl = await getDownloadURL(storageRef);
+                }
+
+                if (editingId) {
+                    // Update existing
+                    const docRef = doc(db, "slideshows", editingId);
+                    await updateDoc(docRef, {
+                        title: formData.title,
+                        description: formData.description,
+                        image: imageUrl,
+                        updatedAt: new Date()
+                    });
+                } else {
+                    // Create new
+                    await addDoc(collection(db, "slideshows"), {
+                        title: formData.title,
+                        description: formData.description,
+                        image: imageUrl,
+                        order: slides.length + 1,
+                        createdAt: new Date()
+                    });
+                }
+
+                await loadSlideshows();
+                resetForm();
+                setShowModal(false);
+                alert("Slideshow saved successfully!");
+                return;
+            } catch (error) {
+                console.error(`Error saving slideshow (attempt ${attempt + 1}):`, error);
+                if (attempt === maxRetries) {
+                    alert("Error saving slideshow. Please try again later.");
+                    break;
+                }
+                // small backoff
+                await new Promise(res => setTimeout(res, 500 * (attempt + 1)));
+                attempt++;
+            } finally {
+                setLoading(false);
             }
-
-            if (editingId) {
-                // Update existing
-                const docRef = doc(db, "slideshows", editingId);
-                await updateDoc(docRef, {
-                    title: formData.title,
-                    description: formData.description,
-                    image: imageUrl,
-                    updatedAt: new Date()
-                });
-            } else {
-                // Create new
-                await addDoc(collection(db, "slideshows"), {
-                    title: formData.title,
-                    description: formData.description,
-                    image: imageUrl,
-                    order: slides.length + 1,
-                    createdAt: new Date()
-                });
-            }
-
-            await loadSlideshows();
-            resetForm();
-            setShowModal(false);
-            alert("Slideshow saved successfully!");
-        } catch (error) {
-            console.error("Error saving slideshow:", error);
-            alert("Error saving slideshow");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -249,9 +267,9 @@ const SlideshowManager: React.FC = () => {
             </div>
 
             {/* Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-8 max-h-96 overflow-y-auto">
+            {showModal && ReactDOM.createPortal(
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-8 max-h-[90vh] overflow-y-auto">
                         <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
                             {editingId ? "Edit Slide" : "Add New Slide"}
                         </h3>
@@ -300,6 +318,18 @@ const SlideshowManager: React.FC = () => {
                                     className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                 />
                             </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Or Image URL
+                                </label>
+                                <input
+                                    type="url"
+                                    value={formData.image}
+                                    onChange={(e) => handleImageUrlChange(e.target.value)}
+                                    className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    placeholder="https://example.com/slide.jpg"
+                                />
+                            </div>
 
                             <div className="flex gap-4 pt-4">
                                 <button
@@ -320,7 +350,8 @@ const SlideshowManager: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

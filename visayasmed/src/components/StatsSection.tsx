@@ -1,66 +1,76 @@
-const StatsSection = () => {
-  const stats = [
+import { useEffect, useState } from 'react';
+import { statsService } from '../utils/dataService';
+
+interface Stat {
+    id?: string;
+    icon: string;
+    number: string;
+    label: string;
+    desc: string;
+}
+
+const defaultStats: Stat[] = [
     { icon: "📅", number: "70+", label: "Years of Excellence", desc: "Serving the community since 1955" },
     { icon: "👨‍⚕️", number: "150+", label: "Medical Professionals", desc: "Board-certified specialists" },
     { icon: "🏥", number: "500+", label: "Beds", desc: "Modern patient facilities" },
     { icon: "💊", number: "50K+", label: "Patients Served", desc: "Monthly patient care" },
     { icon: "🎓", number: "95%", label: "Patient Satisfaction", desc: "Consistently high ratings" },
     { icon: "🌟", number: "10+", label: "Departments", desc: "Comprehensive specialties" },
-  ];
+];
 
-  return (
-    <section className="relative w-screen py-16 lg:py-20 bg-black transition-colors duration-300" style={{
-      marginLeft: 'calc(-50vw + 50%)',
-      marginRight: 'calc(-50vw + 50%)',
-    }}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-10">
-        {/* Section Header */}
-        <div className="text-center mb-14 lg:mb-16">
-          <h2 className="text-3xl lg:text-4xl font-light text-white dark:text-white mb-2">
-            By the Numbers
-          </h2>
-          <div className="w-12 h-1 bg-gradient-to-r from-orange-400 to-red-500 dark:from-orange-400 dark:to-red-500 rounded-full mx-auto" />
-          <p className="text-slate-300 dark:text-slate-300 mt-4 font-light max-w-2xl mx-auto">
-            A trusted healthcare institution committed to delivering excellence in patient care and service
-          </p>
-        </div>
+const StatsSection = () => {
+    const [stats, setStats] = useState<Stat[]>(defaultStats);
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
-          {stats.map((stat, idx) => (
-            <div
-              key={idx}
-              className="group relative overflow-hidden rounded-xl bg-white dark:bg-gray-800/50 border border-slate-200/70 dark:border-gray-700/50 p-6 lg:p-8 text-center hover:border-orange-400 dark:hover:border-orange-400 transition-all duration-300 hover:shadow-lg dark:hover:shadow-lg/20 hover:scale-105 animate-slideInUp"
-              style={{ animationDelay: `${idx * 80}ms` }}
-            >
-              {/* Background gradient on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent dark:from-orange-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+    useEffect(() => {
+        statsService.getStats().then((data) => {
+            if (data && data.length > 0) setStats(data as Stat[]);
+        }).catch(err => {
+            console.warn("Stats load failed, using defaults:", err instanceof Error ? err.message : err);
+        });
+    }, []);
 
-              {/* Icon */}
-              <div className="text-4xl lg:text-5xl mb-3 group-hover:scale-125 transition-transform duration-300">
-                {stat.icon}
-              </div>
+    return (
+        <section className="relative w-screen py-20 lg:py-28 overflow-hidden transition-colors duration-300" style={{
+            marginLeft: 'calc(-50vw + 50%)',
+            marginRight: 'calc(-50vw + 50%)',
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%)',
+        }}>
+            {/* Decorative elements */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
+            <div className="absolute top-20 left-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-10 right-10 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Number */}
-              <div className="text-3xl lg:text-4xl font-light text-orange-400 dark:text-orange-400 mb-1 group-hover:text-orange-300 dark:group-hover:text-orange-300 transition-colors duration-300">
-                {stat.number}
-              </div>
+            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                <div className="text-center mb-16 lg:mb-20">
+                    <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase text-blue-400 mb-3">Our Impact</span>
+                    <h2 className="font-display text-4xl lg:text-5xl font-bold text-white mb-4">By the Numbers</h2>
+                    <div className="w-16 h-1 bg-gradient-to-r from-blue-500 via-blue-500 to-green-500 rounded-full mx-auto" />
+                    <p className="text-gray-400 mt-6 font-light max-w-2xl mx-auto text-lg">
+                        A trusted healthcare institution committed to delivering excellence in patient care and service
+                    </p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
+                    {stats.map((stat, idx) => (
+                        <div
+                            key={stat.id || idx}
+                            className="group relative overflow-hidden rounded-2xl bg-white/[0.03] border border-white/[0.06] p-8 lg:p-10 text-center hover:bg-white/[0.06] hover:border-blue-500/20 transition-all duration-500 hover:scale-[1.03] animate-slideInUp"
+                            style={{ animationDelay: `${idx * 100}ms` }}
+                        >
+                            {/* Hover glow backdrop */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/5 group-hover:to-blue-500/5 transition-all duration-500 -z-10" />
+                            <div className="absolute -top-8 -right-8 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all duration-500" />
 
-              {/* Label */}
-              <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
-                {stat.label}
-              </h3>
-
-              {/* Description */}
-              <p className="text-sm text-slate-600 dark:text-slate-300 font-light">
-                {stat.desc}
-              </p>
+                            <div className="text-4xl lg:text-5xl mb-4 group-hover:scale-110 transition-transform duration-500">{stat.icon}</div>
+                            <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 to-blue-400 bg-clip-text text-transparent mb-2 group-hover:from-blue-300 group-hover:to-blue-300 transition-all duration-300 counter-animation">{stat.number}</div>
+                            <h3 className="text-lg font-semibold text-white mb-2">{stat.label}</h3>
+                            <p className="text-sm text-gray-400 font-light">{stat.desc}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 };
 
 export default StatsSection;

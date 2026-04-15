@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Admin check helper
+    function isAdmin() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ADMIN USERS COLLECTION
+    match /admins/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // PAGES (For admin editing)
+    match /pages/{page} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // SLIDESHOWS
+    match /slideshows/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // DOCTORS
+    match /doctors/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // SERVICES
+    match /services/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // NEWS
+    match /news/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // TESTIMONIALS
+    match /testimonials/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // STATS
+    match /stats/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // FAQS
+    match /faqs/{doc=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // SINGLE DOCTOR PROFILE (used on public site)
+    match /admin/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

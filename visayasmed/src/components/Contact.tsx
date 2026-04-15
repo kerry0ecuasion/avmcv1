@@ -1,20 +1,20 @@
 const Contact = () => (
-  <section className="py-16 px-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+  <section className="relative z-10 py-12 px-6 bg-gray-50/90 dark:bg-gray-900/95 backdrop-blur-sm transition-colors duration-300">
     <div className="max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold text-center text-sky-600 dark:text-sky-400 mb-4">Contact Us</h2>
-      <p className="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto">
+      <h2 className="text-3xl font-bold text-center text-sky-600 dark:text-sky-400 mb-4">Contact Us</h2>
+      <p className="text-center text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto">
         Get in touch with us or visit our hospital. Find our location details and reach out using the information below.
       </p>
 
       {/* Map and Contact Information Section */}
-      <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="mb-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Google Map with Street View */}
         <div className="flex flex-col">
-          <h3 className="text-2xl font-bold text-sky-600 dark:text-sky-400 mb-4">Visit Us</h3>
+          <h3 className="text-xl font-bold text-sky-600 dark:text-sky-400 mb-4">Visit Us</h3>
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m0!3m2!1sen!2sph!4v1234!5m2!1sen!2sph!6m8!1m7!1sqX9m3vqoPlKajP0hvNgC5w!2m2!1d10.3059147!2d123.8945713!3f37.02!4f4.43!5f0.9"
             width="100%"
-            height="380"
+            height="320"
             style={{ border: 0, borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
@@ -28,12 +28,12 @@ const Contact = () => (
 
         {/* Right: Contact Information */}
         <div>
-          <h3 className="text-2xl font-bold text-sky-600 dark:text-sky-400 mb-6">Contact Information</h3>
+          <h3 className="text-xl font-bold text-sky-600 dark:text-sky-400 mb-6">Contact Information</h3>
 
           {/* Phone */}
           <div className="mb-6">
             <div className="flex items-start space-x-3">
-              <div className="text-sky-500 text-2xl mt-1">📞</div>
+              <div className="text-sky-500 text-xl mt-1">📞</div>
               <div className="flex-1">
                 <label className="font-semibold text-gray-900 dark:text-sky-300 block mb-2">Phone</label>
                 <a href="tel:(+32)253-1901" className="text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 transition block text-sm">
@@ -52,7 +52,7 @@ const Contact = () => (
           {/* Email */}
           <div className="mb-6">
             <div className="flex items-start space-x-3">
-              <div className="text-sky-500 text-2xl mt-1">✉️</div>
+              <div className="text-sky-500 text-xl mt-1">✉️</div>
               <div className="flex-1">
                 <label className="font-semibold text-gray-900 dark:text-sky-300 block mb-2">Email</label>
                 <a href="mailto:Info@visayasmed.com.ph" className="text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 transition text-sm break-all">
@@ -65,7 +65,7 @@ const Contact = () => (
           {/* Address */}
           <div className="mb-6">
             <div className="flex items-start space-x-3">
-              <div className="text-sky-500 text-2xl mt-1">📍</div>
+              <div className="text-sky-500 text-xl mt-1">📍</div>
               <div className="flex-1">
                 <label className="font-semibold text-gray-900 dark:text-sky-300 block mb-2">Address</label>
                 <p className="text-gray-700 dark:text-gray-300 text-sm mb-2">
@@ -79,7 +79,7 @@ const Contact = () => (
           {/* Hours */}
           <div>
             <div className="flex items-start space-x-3">
-              <div className="text-sky-500 text-2xl mt-1">🕐</div>
+              <div className="text-sky-500 text-xl mt-1">🕐</div>
               <div className="flex-1">
                 <label className="font-semibold text-gray-900 dark:text-sky-300 block mb-2">Hours</label>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">
@@ -94,10 +94,10 @@ const Contact = () => (
       </div>
 
       {/* Quick Contact Form - Full Width Below */}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-12">
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-10">
         <h3 className="text-2xl font-bold text-sky-600 dark:text-sky-400 mb-8 text-center">Send us a Message</h3>
         
-        <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+        <div className="max-w-2xl mx-auto bg-white/90 dark:bg-gray-800/90 p-8 rounded-lg shadow-md backdrop-blur-sm">
           <form className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Name</label>

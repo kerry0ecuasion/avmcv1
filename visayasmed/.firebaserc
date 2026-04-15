@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "visayasmed-53bbc"
+    "default": "visayasmed-82274",
+    "visayasmed": "visayasmed-82274"
   },
   "targets": {},
   "etags": {}

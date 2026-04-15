@@ -22,16 +22,14 @@ const AdminLogin: React.FC = () => {
       // Provide user-friendly error messages for common Firebase errors
       let errorMessage = 'Login failed';
       
-      if (err.code === 'auth/user-not-found') {
-        errorMessage = 'User not found. Please check your email or create an account in Firebase.';
-      } else if (err.code === 'auth/wrong-password') {
-        errorMessage = 'Incorrect password. Please try again.';
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        errorMessage = 'Invalid email or password.';
       } else if (err.code === 'auth/invalid-email') {
         errorMessage = 'Invalid email address.';
       } else if (err.code === 'auth/user-disabled') {
-        errorMessage = 'This user account has been disabled.';
-      } else if (err.message) {
-        errorMessage = err.message;
+        errorMessage = 'This account has been disabled.';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed attempts. Please try again later.';
       }
       
       setError(errorMessage);
@@ -89,20 +87,9 @@ const AdminLogin: React.FC = () => {
           </button>
         </form>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors duration-300">
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-            <strong>📋 Setup Instructions:</strong>
-          </p>
-          <ol className="text-xs text-gray-600 dark:text-gray-300 space-y-2 list-decimal list-inside">
-            <li>Go to Firebase Console: console.firebase.google.com</li>
-            <li>Open "Authentication" → "Users" tab</li>
-            <li>Click "Add user"</li>
-            <li>Enter Email: <code className="bg-gray-200 dark:bg-gray-700 px-1">admin@visayasmed.com</code></li>
-            <li>Set a password (e.g., Admin@123)</li>
-            <li>Use those credentials to login here</li>
-          </ol>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 italic">
-            💡 Tip: Make sure you're in the correct Firebase project (visayasmed-53bbc)
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
+            Contact your system administrator if you need access.
           </p>
         </div>
       </div>

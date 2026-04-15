@@ -26,7 +26,7 @@ const DoctorProfileEditor: React.FC = () => {
     try {
       // Try to fetch profile via Cloud Function (avoids Firestore client permissions issues)
       const cloudGetUrl = import.meta.env.VITE_CLOUD_FUNCTION_URL_GET ||
-        'https://us-central1-visayasmed-53bbc.cloudfunctions.net/getDoctorProfile';
+        'https://us-central1-visayasmed-82274.cloudfunctions.net/getDoctorProfile';
 
       const auth = getAuth();
       const user = auth.currentUser;
@@ -68,6 +68,12 @@ const DoctorProfileEditor: React.FC = () => {
     }
   };
 
+  const handlePhotoUrlChange = (value: string) => {
+    setProfile({ ...profile, photoUrl: value });
+    setPreviewUrl(value || null);
+    setSelectedFile(null);
+  };
+
   // Solution 2: Upload using Cloud Function (Recommended for production)
   const uploadPhotoToCloudFunction = async (file: File): Promise<string> => {
     try {
@@ -83,7 +89,7 @@ const DoctorProfileEditor: React.FC = () => {
 
       // Call the Cloud Function
       const cloudFunctionUrl = import.meta.env.VITE_CLOUD_FUNCTION_URL ||
-        'https://us-central1-visayasmed-53bbc.cloudfunctions.net/uploadDoctorProfilePhoto';
+        'https://us-central1-visayasmed-82274.cloudfunctions.net/uploadDoctorProfilePhoto';
 
       const response = await fetch(cloudFunctionUrl, {
         method: 'POST',
@@ -166,7 +172,7 @@ const DoctorProfileEditor: React.FC = () => {
           if (user) {
             const idToken = await user.getIdToken();
             const cloudProfileUrl = import.meta.env.VITE_CLOUD_FUNCTION_URL_PROFILE ||
-              'https://us-central1-visayasmed-53bbc.cloudfunctions.net/updateDoctorProfile';
+              'https://us-central1-visayasmed-82274.cloudfunctions.net/updateDoctorProfile';
             await fetch(cloudProfileUrl, {
               method: 'POST',
               headers: {
@@ -209,7 +215,7 @@ const DoctorProfileEditor: React.FC = () => {
       const idToken = await user.getIdToken();
 
       const cloudFunctionUrl = import.meta.env.VITE_CLOUD_FUNCTION_URL_PROFILE ||
-        'https://us-central1-visayasmed-53bbc.cloudfunctions.net/updateDoctorProfile';
+        'https://us-central1-visayasmed-82274.cloudfunctions.net/updateDoctorProfile';
 
       const res = await fetch(cloudFunctionUrl, {
         method: 'POST',
@@ -263,7 +269,14 @@ const DoctorProfileEditor: React.FC = () => {
               onChange={handleFileSelect}
               className="w-full border border-gray-300 rounded-lg px-3 py-2"
             />
-            {previewUrl && (
+            <input
+              type="url"
+              placeholder="Or paste image URL (https://...)"
+              value={profile.photoUrl}
+              onChange={(e) => handlePhotoUrlChange(e.target.value)}
+              className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2"
+            />
+            {previewUrl && selectedFile && (
               <button
                 onClick={handleSavePhoto}
                 disabled={loading}

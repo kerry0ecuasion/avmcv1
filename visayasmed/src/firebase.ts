@@ -5,12 +5,12 @@ import { getStorage } from 'firebase/storage';
 
 // Replace with your Firebase project credentials
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDcVFahBk9EqerK4ac2f0lz3RG64nsdq_c",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "visayasmed-53bbc.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "visayasmed-53bbc",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "visayasmed-53bbc.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1044502906200",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1044502906200:web:d71d7f0ebc5700bf50d12d",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBe7J_hf7ydhet-j9nHtqR3PB_ZCLoe5k8",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "visayasmed-82274.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "visayasmed-82274",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "visayasmed-82274.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "728337782027",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:728337782027:web:02aed14260460c00513e0e",
 };
 
 const app = initializeApp(firebaseConfig);
