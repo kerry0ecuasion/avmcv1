@@ -133,7 +133,7 @@ const Navbar: React.FC = () => {
                     className={`relative text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer
                       px-4 py-2.5 rounded-xl flex items-center gap-1 ${isActive(item)
                         ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                        : 'text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
                       }`}
                   >
                     <span className={`inline-block transition-all duration-300 ${isActive(item) ? 'scale-105' : 'group-hover:scale-105'}`}>
@@ -191,7 +191,7 @@ const Navbar: React.FC = () => {
                 className={`relative text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer group
                   px-4 py-2.5 rounded-xl transition-colors ${isActive(item)
                     ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                    : 'text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
                   }
                 `}
               >
@@ -259,7 +259,7 @@ const Navbar: React.FC = () => {
                       onClick={() => { handleNavClick(item); setMobileOpen(false); }}
                       className={`flex-1 text-left px-4 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider transition-all duration-300 ${isActive(item)
                         ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                        : 'text-black dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
                         }`}
                     >
                       {item.label}
@@ -317,7 +317,7 @@ const Navbar: React.FC = () => {
             className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider transition-all duration-300 ${
               location.pathname === '/contact'
                 ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                : 'text-black dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
           >
             Contact Us

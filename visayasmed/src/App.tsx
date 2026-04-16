@@ -5,6 +5,7 @@ import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import ChatBot from './components/ChatBot';
 import Navbar from './components/Navbar';
 import PageTransition from './components/PageTransition';
+import CookieConsent from './components/CookieConsent';
 
 import Home from './components/Home';
 import AboutPage from './components/AboutPage';
@@ -13,6 +14,8 @@ import ServicesPage from './components/ServicesPage';
 import FAQsPage from './components/FAQsPage';
 import ContactPage from './components/ContactPage';
 import ServiceDetailPage from './components/ServiceDetailPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import CookiePolicyPage from './components/CookiePolicyPage';
 import Admin from './components/Admin';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
@@ -34,6 +37,8 @@ const Layout: React.FC = () => {
           <Route path="/services/:slug" element={<ServiceDetailPage />} />
           <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/cookie-policy" element={<CookiePolicyPage />} />
           <Route
             path="/admin"
             element={
@@ -79,6 +84,7 @@ const App: React.FC = () => {
         <div className="site-container">
           <Router>
             <Layout />
+            <CookieConsent />
           </Router>
         </div>
       </AdminAuthProvider>

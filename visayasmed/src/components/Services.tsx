@@ -109,9 +109,9 @@ const Services = () => {
                         </svg>
                         Medical Services
                     </div>
-                    <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">Our Services</h2>
+                    <h2 className="font-display text-4xl lg:text-5xl font-bold text-black dark:text-white mb-4">Our Services</h2>
                     <div className="section-divider" />
-                    <p className="text-gray-600 dark:text-gray-400 mt-6 font-light max-w-3xl mx-auto text-lg leading-relaxed">
+                    <p className="text-black dark:text-gray-400 mt-6 font-semibold max-w-3xl mx-auto text-lg leading-relaxed">
                         Comprehensive healthcare services delivered by experienced medical professionals, with specialized expertise in regional health challenges
                     </p>
                 </div>
@@ -146,12 +146,12 @@ const Services = () => {
                                     </div>
 
                                     {/* Title */}
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                    <h3 className="text-xl font-bold text-black dark:text-white mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
                                         {service.title}
                                     </h3>
 
                                     {/* Description */}
-                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm mb-6">{service.desc}</p>
+                                    <p className="text-black dark:text-gray-400 leading-relaxed text-sm mb-6 font-semibold">{service.desc}</p>
 
                                     {/* Learn more link */}
                                     <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
@@ -175,8 +175,8 @@ const Services = () => {
                             </svg>
                         </div>
                         <div className="text-left">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">24/7 Emergency Services Available</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">Call (+32) 253-1901 for immediate assistance</p>
+                            <p className="text-sm font-bold text-black dark:text-white">24/7 Emergency Services Available</p>
+                            <p className="text-xs text-black dark:text-gray-400 font-bold">Call (+32) 253-1901 for immediate assistance</p>
                         </div>
                     </div>
                 </div>

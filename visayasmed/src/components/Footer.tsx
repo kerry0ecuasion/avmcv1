@@ -310,6 +310,23 @@ const Footer = () => {
                             {/* Copyright */}
                             <p className="text-gray-500 text-xs text-center">{contact.copyright}</p>
 
+                            {/* Policy Links */}
+                            <div className="flex items-center gap-4">
+                                <a
+                                    href="/privacy-policy"
+                                    className="text-gray-500 hover:text-blue-400 text-xs font-medium transition-colors duration-300"
+                                >
+                                    Privacy Policy
+                                </a>
+                                <span className="text-gray-700 text-xs">|</span>
+                                <a
+                                    href="/cookie-policy"
+                                    className="text-gray-500 hover:text-blue-400 text-xs font-medium transition-colors duration-300"
+                                >
+                                    Cookie Policy
+                                </a>
+                            </div>
+
                             {/* Social placeholder */}
                             <div className="flex items-center gap-2">
                                 <a href="#" className="w-7 h-7 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-gray-400 hover:text-blue-400 hover:border-blue-500/30 transition-all duration-300 hover:scale-110">
