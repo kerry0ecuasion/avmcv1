@@ -21,7 +21,7 @@ const defaultContent: CTAContent = {
         "Personalized treatment plans for your needs",
     ],
     primaryButtonText: "Schedule Appointment",
-    primaryButtonHref: "#find-doctor",
+    primaryButtonHref: "/schedule-appointment",
     secondaryButtonText: "Call Us Now",
     secondaryButtonHref: "tel:+63322531901",
     emergencyNote: "Emergency? Call 911 for immediate assistance"

@@ -276,10 +276,10 @@ const FindDoctor = () => {
                 </div>
 
                 {/* CTA Button */}
-                <button className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold text-sm rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 group-hover:scale-[1.02]">
+                <a href="/schedule-appointment" className="block w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold text-sm rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 group-hover:scale-[1.02] text-center">
                   Schedule Appointment
                   <svg className="inline-block w-4 h-4 ml-1.5 -mt-0.5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
+                </a>
               </div>
 
               {/* Bottom gradient accent on hover */}

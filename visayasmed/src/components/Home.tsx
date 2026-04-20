@@ -627,7 +627,7 @@ const Home: React.FC = () => {
 
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
                             <a
-                                href="/doctors"
+                                href="/schedule-appointment"
                                 className="btn-premium inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-all duration-300 hover:shadow-2xl hover:shadow-white/10 hover:scale-105 text-xs sm:text-sm tracking-wide"
                             >
                                 Schedule Appointment

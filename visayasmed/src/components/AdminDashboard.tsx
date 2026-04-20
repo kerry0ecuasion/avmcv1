@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { appointmentService } from '../utils/appointmentService';
 
 import Footer from './Footer';
 import SlideshowManager from './AdminComponents/SlideshowManager';
@@ -12,12 +13,22 @@ import TestimonialsManager from './AdminComponents/TestimonialsManager';
 import StatsManager from './AdminComponents/StatsManager';
 import FAQsManager from './AdminComponents/FAQsManager';
 import HeroCarouselManager from './AdminComponents/HeroCarouselManager';
+import AppointmentsManager from './AdminComponents/AppointmentsManager';
 
 const AdminDashboard: React.FC = () => {
-    const [activeSection, setActiveSection] = useState('about');
+    const [activeSection, setActiveSection] = useState('appointments');
+    const [pendingCount, setPendingCount] = useState(0);
     const { adminEmail, logout } = useAdminAuth();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
+
+    // Real-time pending badge
+    useEffect(() => {
+        const unsub = appointmentService.subscribeToAppointments((data) => {
+            setPendingCount(data.filter(a => a.status === 'pending').length);
+        });
+        return () => unsub();
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -30,40 +41,51 @@ const AdminDashboard: React.FC = () => {
 
     const navGroups = [
         {
+            label: "Management",
+            items: [
+                {
+                    id: 'appointments',
+                    label: '📅 Appointments',
+                    badge: pendingCount > 0 ? pendingCount : null,
+                },
+            ]
+        },
+        {
             label: "Pages",
             items: [
-                { id: 'home', label: 'Home Page' },
-                { id: 'about', label: 'About Page' },
-                { id: 'emergency', label: 'Emergency Services' },
-                { id: 'cta', label: 'CTA Banner' },
-                { id: 'contact', label: 'Contact / Footer' },
+                { id: 'home',      label: 'Home Page',          badge: null },
+                { id: 'about',     label: 'About Page',         badge: null },
+                { id: 'emergency', label: 'Emergency Services', badge: null },
+                { id: 'cta',       label: 'CTA Banner',         badge: null },
+                { id: 'contact',   label: 'Contact / Footer',   badge: null },
             ]
         },
         {
             label: "Sections",
             items: [
-                { id: 'heroCarousel', label: '🖼️ Hero Carousel' },
-                { id: 'slideshow', label: 'Slideshows' },
-                { id: 'news', label: 'News & Events' },
-                { id: 'doctors', label: 'Doctors' },
-                { id: 'services', label: 'Services' },
-                { id: 'stats', label: 'Stats Section' },
-                { id: 'testimonials', label: 'Testimonials' },
-                { id: 'faqs', label: 'FAQs' },
+                { id: 'heroCarousel',  label: '🖼️ Hero Carousel', badge: null },
+                { id: 'slideshow',     label: 'Slideshows',       badge: null },
+                { id: 'news',          label: 'News & Events',    badge: null },
+                { id: 'doctors',       label: 'Doctors',          badge: null },
+                { id: 'services',      label: 'Services',         badge: null },
+                { id: 'stats',         label: 'Stats Section',    badge: null },
+                { id: 'testimonials',  label: 'Testimonials',     badge: null },
+                { id: 'faqs',          label: 'FAQs',             badge: null },
             ]
-        }
+        },
     ];
 
     const renderContent = () => {
         switch (activeSection) {
-            case 'heroCarousel': return <HeroCarouselManager />;
-            case 'slideshow': return <SlideshowManager />;
-            case 'doctors': return <AdvancedContentEditor page="doctors" />;
-            case 'services': return <AdvancedContentEditor page="services" />;
-            case 'news': return <NewsManager />;
-            case 'testimonials': return <TestimonialsManager />;
-            case 'stats': return <StatsManager />;
-            case 'faqs': return <FAQsManager />;
+            case 'heroCarousel':  return <HeroCarouselManager />;
+            case 'appointments':  return <AppointmentsManager />;
+            case 'slideshow':     return <SlideshowManager />;
+            case 'doctors':       return <AdvancedContentEditor page="doctors" />;
+            case 'services':      return <AdvancedContentEditor page="services" />;
+            case 'news':          return <NewsManager />;
+            case 'testimonials':  return <TestimonialsManager />;
+            case 'stats':         return <StatsManager />;
+            case 'faqs':          return <FAQsManager />;
             case 'home':
             case 'about':
             case 'emergency':
@@ -83,19 +105,25 @@ const AdminDashboard: React.FC = () => {
             backgroundRepeat: 'no-repeat',
             backgroundAttachment: 'fixed'
         }}>
-            <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/90 transition-colors duration-300 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/90 transition-colors duration-300 pointer-events-none" />
 
             <header className="relative z-10 bg-sky-600 dark:bg-sky-800 text-white py-4 shadow-lg transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">VisayasMed Admin</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-2xl font-bold">VisayasMed Admin</h1>
+                        {pendingCount > 0 && (
+                            <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500 text-white text-xs font-black rounded-full shadow-lg animate-pulse">
+                                {pendingCount > 99 ? '99+' : pendingCount}
+                            </span>
+                        )}
+                    </div>
                     <div className="flex items-center gap-4">
                         <span className="text-sm">{adminEmail}</span>
-                        <a href="/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors">View Live Site</a>
+                        <a href="/" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm">View Live Site</a>
                         <button
                             onClick={toggleTheme}
                             className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center justify-center"
                             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-                            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                         >
                             {theme === 'light' ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -108,7 +136,7 @@ const AdminDashboard: React.FC = () => {
                                 </svg>
                             )}
                         </button>
-                        <button onClick={handleLogout} className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors">Logout</button>
+                        <button onClick={handleLogout} className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors text-sm">Logout</button>
                     </div>
                 </div>
             </header>
@@ -126,12 +154,22 @@ const AdminDashboard: React.FC = () => {
                                             <li key={item.id}>
                                                 <button
                                                     onClick={() => setActiveSection(item.id)}
-                                                    className={`w-full text-left px-3 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === item.id
-                                                        ? 'bg-sky-600 text-white'
-                                                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                                        }`}
+                                                    className={`w-full text-left px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center justify-between ${
+                                                        activeSection === item.id
+                                                            ? 'bg-sky-600 text-white'
+                                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                                    }`}
                                                 >
-                                                    {item.label}
+                                                    <span>{item.label}</span>
+                                                    {item.badge !== null && (
+                                                        <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-black ${
+                                                            activeSection === item.id
+                                                                ? 'bg-white text-sky-600'
+                                                                : 'bg-red-500 text-white'
+                                                        }`}>
+                                                            {item.badge > 99 ? '99+' : item.badge}
+                                                        </span>
+                                                    )}
                                                 </button>
                                             </li>
                                         ))}

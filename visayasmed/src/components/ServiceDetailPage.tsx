@@ -432,9 +432,9 @@ const ServiceDetailPage: React.FC = () => {
                       )}
 
                       {/* CTA Button */}
-                      <button className={`w-full py-3 px-4 bg-gradient-to-r ${service.colorAccent} hover:opacity-90 text-white font-semibold text-sm rounded-xl transition-all duration-300 hover:shadow-lg`}>
+                      <a href="/schedule-appointment" className={`block w-full py-3 px-4 bg-gradient-to-r ${service.colorAccent} hover:opacity-90 text-white font-semibold text-sm rounded-xl transition-all duration-300 hover:shadow-lg text-center`}>
                         Schedule Appointment
-                      </button>
+                      </a>
                     </div>
                   );
                 })}

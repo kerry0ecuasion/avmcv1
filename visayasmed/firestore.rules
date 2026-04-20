@@ -66,6 +66,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // APPOINTMENTS — public can create (book), only admin can read/update
+    match /appointments/{doc} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
     // Catch-all deny
     match /{document=**} {
       allow read, write: if false;
