@@ -212,21 +212,21 @@ const Navbar: React.FC = () => {
             );
           })}
 
-          {/* Contact Us button */}
+          {/* Find a Doctor button */}
           <Link
-            to="/contact"
+            to="/doctors"
             onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })}
             style={{
               animation: showNav ? `stagger-nav 0.5s ease-out ${navItems.length * 0.08}s forwards` : 'none',
               opacity: showNav ? 1 : 0,
             }}
             className={`px-6 py-2.5 rounded-full text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 ${
-              location.pathname === '/contact'
+              location.pathname === '/doctors'
                 ? 'bg-gradient-to-r from-blue-500 to-blue-500 text-white shadow-lg shadow-blue-500/30'
                 : 'bg-gradient-to-r from-blue-600 to-blue-600 text-white hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105'
             }`}
           >
-            Contact Us
+            Find a Doctor
           </Link>
 
           {/* Theme Toggle Button */}
@@ -312,15 +312,15 @@ const Navbar: React.FC = () => {
             );
           })}
           <Link
-            to="/contact"
+            to="/doctors"
             onClick={() => { window.scrollTo({ top: 0, behavior: 'instant' }); setMobileOpen(false); }}
             className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider transition-all duration-300 ${
-              location.pathname === '/contact'
+              location.pathname === '/doctors'
                 ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
                 : 'text-black dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50'
             }`}
           >
-            Contact Us
+            Find a Doctor
           </Link>
           <button
             onClick={toggleTheme}
