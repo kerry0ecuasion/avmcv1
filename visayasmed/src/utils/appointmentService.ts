@@ -118,13 +118,20 @@ export const appointmentService = {
 
   // ── Read (real-time) ───────────────────────────────────────────────────────
   subscribeToAppointments(
-    callback: (appointments: (AppointmentData & { id: string })[]) => void
+    callback: (appointments: (AppointmentData & { id: string })[]) => void,
+    onError?: (error: any) => void
   ): Unsubscribe {
     const q = query(collection(db, "appointments"), orderBy("createdAt", "desc"));
-    return onSnapshot(q, (snapshot) => {
-      const appointments = snapshot.docs.map(mapDoc);
-      callback(appointments);
-    });
+    return onSnapshot(q, 
+      (snapshot) => {
+        const appointments = snapshot.docs.map(mapDoc);
+        callback(appointments);
+      },
+      (error) => {
+        console.error("Firestore onSnapshot error:", error);
+        if (onError) onError(error);
+      }
+    );
   },
 
   // ── Confirm ────────────────────────────────────────────────────────────────

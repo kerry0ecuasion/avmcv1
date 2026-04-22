@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { format } from "date-fns";
 import { appointmentService, emailService, type AppointmentData, type AppointmentStatus } from "../../utils/appointmentService";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
@@ -78,8 +79,8 @@ const AppointmentModal: React.FC<Props> = ({ appointment: apt, onClose, onUpdate
     finally { setActing(null); }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700"
         onClick={e => e.stopPropagation()}
@@ -216,7 +217,8 @@ const AppointmentModal: React.FC<Props> = ({ appointment: apt, onClose, onUpdate
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -60,6 +60,7 @@ const AppointmentsManager: React.FC = () => {
   /* ── Real-time listener ── */
   useEffect(() => {
     const unsub = appointmentService.subscribeToAppointments((data) => {
+      console.log("Admin received appointments sync:", data.length);
       if (isFirstLoad.current) {
         // Seed seen IDs silently on first load
         data.forEach(a => seenIds.current.add(a.id));
@@ -69,11 +70,15 @@ const AppointmentsManager: React.FC = () => {
         data.forEach(a => {
           if (!seenIds.current.has(a.id)) {
             seenIds.current.add(a.id);
-            addToast(`🔔 New appointment from ${a.patientName} — ${a.referenceNumber}`, "info");
+            addToast(`🔔 New appointment from ${a.patientName || "Unknown"} — ${a.referenceNumber || "N/A"}`, "info");
           }
         });
       }
       setAppointments(data);
+      setLoading(false);
+    }, (error) => {
+      console.error("Firestore subscription error in Admin:", error);
+      addToast(`Failed to sync appointments: ${error instanceof Error ? error.message : "Unknown error"}`, "error");
       setLoading(false);
     });
     return () => unsub();
@@ -83,16 +88,29 @@ const AppointmentsManager: React.FC = () => {
   const doctors = Array.from(new Set(appointments.map(a => a.doctorName))).sort();
 
   const filtered = appointments.filter(a => {
-    const q = search.toLowerCase();
-    const matchSearch = !q || a.patientName.toLowerCase().includes(q) || a.referenceNumber.toLowerCase().includes(q);
+    const q = search.toLowerCase().trim();
+    const pName = (a.patientName || "").toLowerCase();
+    const rNum = (a.referenceNumber || "").toLowerCase();
+    
+    const matchSearch = !q || pName.includes(q) || rNum.includes(q);
     const matchStatus = statusFilter === "all" || a.status === statusFilter;
-    const matchDoctor = doctorFilter === "all" || a.doctorName === doctorFilter;
+    const matchDoctor = doctorFilter === "all" || (a.doctorName || "Unknown") === doctorFilter;
+    
     let matchDate = true;
     if (dateFrom || dateTo) {
-      const aDate = parseISO(a.date);
-      if (dateFrom && dateTo) matchDate = isWithinInterval(aDate, { start: startOfDay(parseISO(dateFrom)), end: endOfDay(parseISO(dateTo)) });
-      else if (dateFrom) matchDate = aDate >= startOfDay(parseISO(dateFrom));
-      else if (dateTo)   matchDate = aDate <= endOfDay(parseISO(dateTo));
+      if (!a.date) {
+        matchDate = false;
+      } else {
+        try {
+          const aDate = parseISO(a.date);
+          if (dateFrom && dateTo) matchDate = isWithinInterval(aDate, { start: startOfDay(parseISO(dateFrom)), end: endOfDay(parseISO(dateTo)) });
+          else if (dateFrom) matchDate = aDate >= startOfDay(parseISO(dateFrom));
+          else if (dateTo)   matchDate = aDate <= endOfDay(parseISO(dateTo));
+        } catch (e) {
+          console.warn("Date parsing error for appointment:", a.id, e);
+          matchDate = false;
+        }
+      }
     }
     return matchSearch && matchStatus && matchDoctor && matchDate;
   });
@@ -111,6 +129,7 @@ const AppointmentsManager: React.FC = () => {
     confirmed: appointments.filter(a => a.status === "confirmed" && a.date === today).length,
     cancelled: appointments.filter(a => a.status === "cancelled" && a.date === today).length,
     total:     appointments.filter(a => a.date?.startsWith(format(new Date(), "yyyy-MM"))).length,
+    completed: appointments.filter(a => a.status === "completed").length,
   };
 
   /* ── Update local state after action ── */
@@ -199,10 +218,11 @@ const AppointmentsManager: React.FC = () => {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         {([
           { label: "Pending", key: "pending", emoji: "🟡", count: counts.pending, sub: `${todayCounts.pending} today`, color: "border-yellow-400" },
           { label: "Confirmed", key: "confirmed", emoji: "🟢", count: counts.confirmed, sub: `${todayCounts.confirmed} today`, color: "border-green-500" },
+          { label: "Completed", key: "completed", emoji: "⚫", count: counts.completed, sub: "Historical", color: "border-gray-500" },
           { label: "Cancelled", key: "cancelled", emoji: "🔴", count: counts.cancelled, sub: `${todayCounts.cancelled} today`, color: "border-red-500" },
           { label: "Total", key: "all", emoji: "📋", count: counts.all, sub: `${todayCounts.total} this month`, color: "border-sky-500" },
         ] as const).map(card => (
@@ -227,6 +247,10 @@ const AppointmentsManager: React.FC = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">📋 Appointments</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">Showing {filtered.length} of {appointments.length} appointments</p>
+          </div>
+          <div className="bg-sky-50 dark:bg-sky-900/30 px-4 py-2 rounded-xl border border-sky-100 dark:border-sky-800">
+            <span className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-widest block mb-0.5">Today's Date</span>
+            <span className="text-sm font-black text-sky-900 dark:text-sky-100">{format(new Date(), "EEEE, MMMM do, yyyy")}</span>
           </div>
         </div>
 
@@ -299,7 +323,7 @@ const AppointmentsManager: React.FC = () => {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               <tr>
-                {["#","Ref No.","Patient","Contact","Doctor","Specialization","Date","Time","Status","Actions"].map(h => (
+                {["#","Ref No.","Patient","Doctor","Appt. Date","Time","Status","Done At","Actions"].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -312,9 +336,7 @@ const AppointmentsManager: React.FC = () => {
                     <span className="font-mono text-sky-600 dark:text-sky-400 text-xs font-bold tracking-wide">{apt.referenceNumber}</span>
                   </td>
                   <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">{apt.patientName}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{apt.contactNumber}</td>
                   <td className="px-4 py-3 text-gray-800 dark:text-gray-200 whitespace-nowrap">{apt.doctorName}</td>
-                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{apt.specialization}</td>
                   <td className="px-4 py-3 text-gray-700 dark:text-gray-300 whitespace-nowrap">
                     {apt.date ? format(parseISO(apt.date), "MMM d, yyyy") : "—"}
                   </td>
@@ -323,6 +345,9 @@ const AppointmentsManager: React.FC = () => {
                     <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${STATUS_BADGE[apt.status]}`}>
                       {STATUS_EMOJI[apt.status]} {apt.status}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">
+                    {apt.status === "completed" && apt.completedAt ? format(apt.completedAt as Date, "MMM d, h:mm a") : "—"}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1.5">

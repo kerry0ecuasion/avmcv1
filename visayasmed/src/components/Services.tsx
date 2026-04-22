@@ -10,7 +10,7 @@ interface Service {
     desc: string;
 }
 
-const defaultServices: Service[] = [
+export const defaultServices: Service[] = [
     { icon: "family-medicine", title: "Family Medicine", desc: "Comprehensive primary care for patients of all ages, focusing on preventive medicine and health maintenance for the entire family." },
     { icon: "pediatrics", title: "Pediatrics", desc: "Specialized medical care for infants, children, and adolescents, including well-child check-ups, vaccinations, and treatment of childhood illnesses." },
     { icon: "internal-medicine", title: "Internal Medicine", desc: "Expert diagnosis and treatment of adult diseases, managing complex medical conditions including diabetes, hypertension, and heart disease." },

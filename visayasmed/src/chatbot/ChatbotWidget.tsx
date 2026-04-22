@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Avatar } from './Avatar';
-import { SendIcon, MicrophoneIcon } from './Icons';
+import { SendIcon } from './Icons';
 import './ChatbotWidget.css';
 import { sendMessageToAPI } from './chatAPI';
+import { faqsService, serviceService } from '../utils/dataService';
+import { defaultFaqs } from '../components/FAQs';
+import { defaultServices } from '../components/Services';
 
 interface Message {
   id: string;
@@ -50,23 +52,7 @@ const isMedicalAdviceQuestion = (text: string): boolean => {
   return keywords.some((kw) => lowered.includes(kw));
 };
 
-const getHospitalInfo = (text: string): string | null => {
-  const lowered = text.toLowerCase();
 
-  if (lowered.includes('service') || lowered.includes('department') || lowered.includes('facility'))
-    return "VisayasMed Hospital offers comprehensive services including Emergency Medicine, Cardiology, Orthopedics, General Surgery, Pediatrics, Obstetrics & Gynecology, Radiology, Laboratory Services, and 24/7 Nursing Care. Is there a specific department you'd like to know more about?";
-  if (lowered.includes('hour') || lowered.includes('open') || lowered.includes('schedule'))
-    return "VisayasMed Hospital operates 24/7. Our Emergency Department is always open. Outpatient clinics run Monday–Friday 7:00 AM–6:00 PM, Saturday 7:00 AM–2:00 PM.";
-  if (lowered.includes('contact') || lowered.includes('phone') || lowered.includes('location'))
-    return "Reach us at: Main Office: +63-xx-xxx-xxxx | Emergency: +63-xx-xxx-xxxx | Appointments: +63-xx-xxx-xxxx | Email: info@visayasmed.com";
-  if (lowered.includes('admission') || lowered.includes('admit'))
-    return "To be admitted, visit our Registration Office or call ahead. Bring a valid ID and insurance information. For emergencies, go directly to our Emergency Department.";
-  if (lowered.includes('insurance') || lowered.includes('payment') || lowered.includes('bill'))
-    return "We accept major insurance providers, HMOs, PhilHealth, and private insurance. Flexible payment plans are available. Contact our Billing Department at ext. 1234 for details.";
-  if (lowered.includes('visit'))
-    return "Visiting hours are 10:00 AM to 8:00 PM daily. ICU visiting is limited to immediate family. Up to 2 visitors per patient at a time.";
-  return null;
-};
 
 export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -88,45 +74,38 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isListening, setIsListening] = useState(false);
+  const [contextData, setContextData] = useState<string>('');
+  const [faqsList, setFaqsList] = useState<any[]>([]);
+  const [servicesList, setServicesList] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const recognitionRef = useRef<any>(null);
-  const cancelledByUserRef = useRef(false);
-  const inputValueRef = useRef(input);
-
-  useEffect(() => { inputValueRef.current = input; }, [input]);
 
   useEffect(() => {
-    const SR = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    if (!SR) return;
-    recognitionRef.current = new SR();
-    recognitionRef.current.continuous = false;
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.lang = 'en-US';
+    async function loadContext() {
+      try {
+        const [faqs, services] = await Promise.all([
+          faqsService.getFaqs(),
+          serviceService.getServices()
+        ]);
 
-    recognitionRef.current.onstart = () => setIsListening(true);
+        const finalFaqs = faqs && faqs.length > 0 ? faqs : defaultFaqs;
+        const finalServices = services && services.length > 0 ? services : defaultServices;
 
-    recognitionRef.current.onresult = (event: any) => {
-      let finalTranscript = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript + ' ';
+        let ctx = '';
+        if (finalFaqs && finalFaqs.length > 0) {
+          setFaqsList(finalFaqs);
+          ctx += 'HOSPITAL FAQs:\n' + finalFaqs.map((f: any) => `Q: ${f.q}\nA: ${f.a}`).join('\n') + '\n\n';
+        }
+        if (finalServices && finalServices.length > 0) {
+          setServicesList(finalServices);
+          ctx += 'HOSPITAL SERVICES:\n' + finalServices.map((s: any) => `- ${s.title}: ${s.description || s.desc}`).join('\n') + '\n\n';
+        }
+        setContextData(ctx);
+      } catch (err) {
+        console.warn('Failed to load chat context', err);
       }
-      if (finalTranscript) setInput(finalTranscript.trim());
-    };
-
-    recognitionRef.current.onend = () => {
-      setIsListening(false);
-      if (cancelledByUserRef.current) { cancelledByUserRef.current = false; return; }
-      const currentInput = inputValueRef.current.trim();
-      if (currentInput) {
-        setTimeout(() => handleSendMessage(null, currentInput), 300);
-      }
-    };
-
-    recognitionRef.current.onerror = () => setIsListening(false);
+    }
+    loadContext();
   }, []);
 
   useEffect(() => {
@@ -141,53 +120,12 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
   }, [messages]);
 
   useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-      recognitionRef.current?.abort();
-    };
-  }, []);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
-
-  const speakResponse = (text: string) => {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-GB';
-    utterance.rate = 0.9;
-    utterance.pitch = 0.95;
-    utterance.volume = 1;
-
-    const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(
-      (v) => v.name.includes('Siri') || v.name.includes('Victoria') || v.lang?.includes('en-GB')
-    ) || voices.find((v) => v.name.includes('Google') || v.name.includes('Alex'));
-    if (preferred) utterance.voice = preferred;
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    synthesisRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const handleStartListening = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!recognitionRef.current) return;
-    if (!isListening) {
-      setInput('');
-      cancelledByUserRef.current = false;
-      recognitionRef.current.start();
-    } else {
-      cancelledByUserRef.current = true;
-      recognitionRef.current.stop();
-    }
-  };
 
   const handleSendMessage = async (e: any, overrideMessage?: string) => {
     e?.preventDefault?.();
@@ -204,7 +142,6 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
       const botMsg: Message = { id: (Date.now() + 1).toString(), type: 'bot', text: greetingResponse, timestamp: new Date() };
       setMessages((prev) => [...prev, botMsg]);
       setIsLoading(false);
-      speakResponse(greetingResponse);
       return;
     }
 
@@ -212,47 +149,76 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
       const reply = "I'm here to help with general information about VisayasMed only. I can't provide diagnosis, treatment recommendations, or medication advice. Please consult a licensed physician or visit our hospital for medical concerns.";
       setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), type: 'bot', text: reply, timestamp: new Date() }]);
       setIsLoading(false);
-      speakResponse(reply);
+      return;
+    }
+
+    // Local Search Logic against Front-end Data
+    const lowered = userInput.toLowerCase();
+    let localAnswer = null;
+
+    if (lowered.includes('hour') || lowered.includes('time') || lowered.includes('open')) {
+      const hoursFaq = faqsList.find(f => f.q.toLowerCase().includes('hour') || f.q.toLowerCase().includes('time'));
+      if (hoursFaq) localAnswer = hoursFaq.a;
+    } else if (lowered.includes('appoint') || lowered.includes('book') || lowered.includes('schedule')) {
+      const apptFaq = faqsList.find(f => f.q.toLowerCase().includes('appoint') || f.q.toLowerCase().includes('book'));
+      if (apptFaq) localAnswer = apptFaq.a;
+    } else if (lowered.includes('bring') || lowered.includes('need')) {
+      const bringFaq = faqsList.find(f => f.q.toLowerCase().includes('bring'));
+      if (bringFaq) localAnswer = bringFaq.a;
+    } else if (lowered.includes('insur') || lowered.includes('pay') || lowered.includes('hmo') || lowered.includes('accept')) {
+      const payFaq = faqsList.find(f => f.q.toLowerCase().includes('insur') || f.q.toLowerCase().includes('pay') || f.q.toLowerCase().includes('accept'));
+      if (payFaq) localAnswer = payFaq.a;
+    }
+
+    if (!localAnswer) {
+      const words = lowered.split(/\s+/).filter(w => w.length > 4);
+      for (const faq of faqsList) {
+        const qLower = faq.q.toLowerCase();
+        if (qLower.includes(lowered) || lowered.includes(qLower) || words.some(w => qLower.includes(w))) {
+          localAnswer = faq.a;
+          break;
+        }
+      }
+    }
+
+    if (!localAnswer) {
+      const words = lowered.split(/\s+/).filter(w => w.length > 4);
+      for (const service of servicesList) {
+        const tLower = service.title.toLowerCase();
+        if (tLower.includes(lowered) || lowered.includes(tLower) || words.some(w => tLower.includes(w))) {
+          localAnswer = `${service.title}: ${service.description || service.desc}`;
+          break;
+        }
+      }
+    }
+
+    if (localAnswer) {
+      setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), type: 'bot', text: localAnswer, timestamp: new Date() }]);
+      setIsLoading(false);
       return;
     }
 
     try {
-      const botReply = await sendMessageToAPI(userInput);
+      const botReply = await sendMessageToAPI(userInput, contextData);
       setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), type: 'bot', text: botReply, timestamp: new Date() }]);
       setIsLoading(false);
-      speakResponse(botReply);
     } catch {
-      const fallback = getHospitalInfo(userInput) ||
-        "I'm sorry, the assistant service is currently unavailable. I can still help with general hospital information! Ask me about our services, departments, visiting hours, or how to contact us.";
+      const fallback = "I'm sorry, the assistant service is currently unavailable. Please check our website pages directly for more information.";
       setMessages((prev) => [...prev, { id: (Date.now() + 2).toString(), type: 'bot', text: fallback, timestamp: new Date() }]);
       setIsLoading(false);
-      speakResponse(fallback);
     }
   };
 
   const handleClearChat = () => {
-    window.speechSynthesis.cancel();
-    recognitionRef.current?.abort();
-    setIsSpeaking(false);
-    setIsListening(false);
     setMessages([{
       id: '0', type: 'bot',
       text: "Hello! I'm your VisayasMed Hospital Assistant. How can I help you today?",
       timestamp: new Date(),
     }]);
   };
-
-  const lastBotIndex = [...messages].map((m, i) => ({ ...m, i })).filter((m) => m.type === 'bot').pop()?.i ?? -1;
-
   return (
     <div className="chatbot-container">
       <div className="chatbot-main">
-        <div className="avatar-section">
-          <Avatar isTyping={isLoading} isSpeaking={isSpeaking} isListening={isListening} />
-          {isSpeaking && <div className="speaking-label">Speaking...</div>}
-          {isListening && <div className="listening-label">Listening...</div>}
-        </div>
-
         <div className="chat-section">
           <div className="chat-header">
             <div className="chat-header-content">
@@ -278,7 +244,7 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
                   </div>
                 </div>
 
-                {message.type === 'bot' && index === lastBotIndex && (
+                {message.type === 'bot' && index === 0 && (
                   <div className="quick-replies-section">
                     <p className="quick-replies-label">Quick Questions:</p>
                     <div className="quick-replies-grid">
@@ -287,7 +253,7 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
                           key={reply.id}
                           className="quick-reply-btn"
                           onClick={() => handleSendMessage(null, reply.message)}
-                          disabled={isLoading || isSpeaking}
+                          disabled={isLoading}
                         >
                           {reply.label}
                         </button>
@@ -316,23 +282,14 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type or use voice..."
-              disabled={isLoading || isSpeaking || isListening}
+              placeholder="Type your message..."
+              disabled={isLoading}
               className="chat-input"
               autoFocus
             />
             <button
-              type="button"
-              onClick={handleStartListening}
-              disabled={isLoading || isSpeaking}
-              className={`voice-button ${isListening ? 'active' : ''}`}
-              title="Voice input"
-            >
-              <MicrophoneIcon size={20} color="currentColor" />
-            </button>
-            <button
               type="submit"
-              disabled={isLoading || isSpeaking || isListening || !input.trim()}
+              disabled={isLoading || !input.trim()}
               className="send-button"
               title="Send message"
             >
@@ -341,7 +298,7 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
             <button
               type="button"
               onClick={handleClearChat}
-              disabled={isLoading || isSpeaking || isListening}
+              disabled={isLoading}
               className="clear-button"
               title="Clear chat history"
             >
@@ -351,7 +308,7 @@ export const ChatbotWidget: React.FC<ChatbotWidgetProps> = ({ onClose }) => {
 
           <div className="chat-footer">
             <p className="disclaimer">
-              Type or click the mic to speak. This assistant provides general hospital information only. For emergencies, call our hotline directly.
+              This assistant provides general hospital information only. For emergencies, call our hotline directly.
             </p>
           </div>
         </div>

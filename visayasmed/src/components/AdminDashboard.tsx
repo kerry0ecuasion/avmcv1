@@ -26,7 +26,7 @@ const AdminDashboard: React.FC = () => {
     useEffect(() => {
         const unsub = appointmentService.subscribeToAppointments((data) => {
             setPendingCount(data.filter(a => a.status === 'pending').length);
-        });
+        }, (err) => console.error("Badge listener error:", err));
         return () => unsub();
     }, []);
 

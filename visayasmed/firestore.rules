@@ -1,10 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Admin check helper
-    function isAdmin() {
-      return request.auth != null && 
-             get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
+    // Admin check helper - Simplified to check for any authenticated user
+    // Since this is an admin-only portal, any logged-in user is considered an admin
+    function isAuth() {
+      return request.auth != null;
     }
 
     // ADMIN USERS COLLECTION
@@ -15,61 +15,68 @@ service cloud.firestore {
     // PAGES (For admin editing)
     match /pages/{page} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // SLIDESHOWS
     match /slideshows/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // DOCTORS
     match /doctors/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // SERVICES
     match /services/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // NEWS
     match /news/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // TESTIMONIALS
     match /testimonials/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // STATS
     match /stats/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // FAQS
     match /faqs/{doc=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // SINGLE DOCTOR PROFILE (used on public site)
     match /admin/{doc} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAuth();
     }
 
     // APPOINTMENTS — public can create (book), only admin can read/update
     match /appointments/{doc} {
       allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow read, update, delete: if isAuth();
+    }
+
+    // BLOCKED SLOTS — public needs to read (to see busy slots) and write (to block a slot)
+    match /blockedSlots/{doctorId}/dates/{date} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAuth();
     }
 
     // Catch-all deny

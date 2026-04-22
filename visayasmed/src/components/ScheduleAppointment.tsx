@@ -222,7 +222,7 @@ const ScheduleAppointment: React.FC = () => {
     setTimeout(() => { setShowToast(true); setTimeout(() => setShowToast(false), 4000); }, 500);
 
     // Save to Firebase in the background — pass the same ref number so admin sees matching data
-    appointmentService.createAppointment({
+    const appointmentPayload = {
       doctorId: selectedDoctor.id || selectedDoctor.name.toLowerCase().replace(/\s+/g, "-"),
       doctorName: selectedDoctor.name,
       specialization: selectedDoctor.specialty,
@@ -235,7 +235,15 @@ const ScheduleAppointment: React.FC = () => {
       email,
       reasonForVisit,
       isFirstVisit: isFirstVisit ?? false,
-    }, refNum).catch(err => console.error("Appointment save to Firestore failed:", err));
+    };
+    
+    console.log("Submitting appointment to Firebase:", appointmentPayload);
+    
+    appointmentService.createAppointment(appointmentPayload, refNum)
+      .then(res => console.log("Appointment saved successfully:", res.referenceNumber))
+      .catch(err => {
+        console.error("Appointment save to Firestore failed:", err);
+      });
   };
 
   /* ───── Reset ───── */

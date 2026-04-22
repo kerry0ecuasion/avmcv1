@@ -36,9 +36,9 @@ const CookieConsent: React.FC = () => {
 
   return (
     <>
-      {/* Backdrop overlay */}
+      {/* Backdrop overlay - with stronger blur for premium feel */}
       <div
-        className={`fixed inset-0 z-[99998] bg-black/50 backdrop-blur-sm transition-opacity duration-400 ${
+        className={`fixed inset-0 z-[99998] bg-black/60 backdrop-blur-md transition-opacity duration-500 ${
           animateOut ? 'opacity-0' : 'opacity-100'
         }`}
         onClick={handleClose}
@@ -47,80 +47,82 @@ const CookieConsent: React.FC = () => {
       {/* Cookie consent modal */}
       <div
         className={`fixed z-[99999] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-          w-[95vw] max-w-[520px] transition-all duration-400
-          ${animateOut ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
+          w-[95vw] max-w-[540px] transition-all duration-500 ease-out
+          ${animateOut ? 'opacity-0 scale-95 translate-y-[-45%]' : 'opacity-100 scale-100 translate-y-[-50%]'}
         `}
         role="dialog"
         aria-modal="true"
         aria-label="Cookie consent"
         id="cookie-consent-dialog"
       >
-        <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl shadow-black/20 dark:shadow-black/50 border border-gray-200 dark:border-gray-700/60 overflow-hidden">
+        <div className="relative bg-[#0f172a] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-700/50 overflow-hidden">
           {/* Decorative top gradient bar */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500" />
-
-          {/* Close button */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 z-20" />
+          
+          {/* Subtle glow effect in the corner */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none" />
+          
+          {/* Close button - sleek and minimal */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-700 transition-all duration-300 group"
+            className="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 transition-all duration-300 group z-10"
             aria-label="Close cookie consent"
             id="cookie-consent-close"
           >
-            <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            <svg className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
-          <div className="p-6 pt-8">
+          <div className="p-8 sm:p-10">
             {/* Content area with badge and text */}
-            <div className="flex gap-5 items-start">
-              {/* DPO/DPS Badge */}
-              <div className="flex-shrink-0 hidden sm:flex">
-                <div className="w-[100px] h-[100px] rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 border border-blue-200/60 dark:border-blue-700/40 flex flex-col items-center justify-center p-2 shadow-sm">
-                  {/* Shield icon */}
-                  <div className="relative mb-1">
-                    <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900" />
+            <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start text-center sm:text-left">
+              {/* DPO/DPS Badge - Premium Glassmorphism style */}
+              <div className="flex-shrink-0">
+                <div className="w-[120px] h-[120px] rounded-[28px] bg-gradient-to-br from-blue-600/10 to-indigo-600/5 border border-blue-500/20 flex flex-col items-center justify-center p-4 relative group hover:scale-105 transition-transform duration-500">
+                  {/* Subtle inner glow */}
+                  <div className="absolute inset-0 bg-blue-500/5 rounded-[28px] blur-xl group-hover:bg-blue-500/10 transition-all duration-500" />
+                  
+                  {/* VisayasMed Logo */}
+                  <div className="relative">
+                    <img 
+                      src="/VMlogo.png" 
+                      alt="VisayasMed Logo" 
+                      className="w-16 h-16 object-contain drop-shadow-[0_0_8px_rgba(96,165,250,0.3)]"
+                    />
                   </div>
-                  <span className="text-[11px] font-bold text-blue-700 dark:text-blue-300 tracking-wide">DPO/DPS</span>
-                  <span className="text-[8px] font-medium text-blue-500 dark:text-blue-400 uppercase tracking-wider">Compliant</span>
                 </div>
               </div>
 
               {/* Text content */}
               <div className="flex-1 min-w-0">
-                <p className="text-gray-700 dark:text-gray-300 text-[13px] leading-relaxed font-normal">
+                <p className="text-slate-300 text-[15px] leading-[1.7] font-medium">
                   We use cookies to ensure you get the best browsing experience on our website. As we strive to provide you with exceptional healthcare, we also need to keep our{' '}
                   <Link
                     to="/privacy-policy"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold underline underline-offset-2 decoration-blue-400/40 hover:decoration-blue-500 transition-colors duration-200"
-                    onClick={handleAgree}
+                    className="text-white hover:text-blue-400 font-bold underline underline-offset-4 decoration-slate-600 hover:decoration-blue-400/50 transition-all duration-300"
+                    onClick={() => {}} // Remove redundant onClick
                   >
                     Privacy Policy
                   </Link>{' '}
                   up-to-date. By continued use of our website, you agree to our{' '}
                   <Link
                     to="/privacy-policy"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold underline underline-offset-2 decoration-blue-400/40 hover:decoration-blue-500 transition-colors duration-200"
-                    onClick={handleAgree}
+                    className="text-white hover:text-blue-400 font-bold underline underline-offset-4 decoration-slate-600 hover:decoration-blue-400/50 transition-all duration-300"
                   >
                     Privacy Policy
                   </Link>{' '}
                   and accept our use of such cookies. You may read and review our{' '}
                   <Link
                     to="/privacy-policy"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold underline underline-offset-2 decoration-blue-400/40 hover:decoration-blue-500 transition-colors duration-200"
-                    onClick={handleAgree}
+                    className="text-white hover:text-blue-400 font-bold underline underline-offset-4 decoration-slate-600 hover:decoration-blue-400/50 transition-all duration-300"
                   >
                     Privacy Policy
                   </Link>{' '}
                   and{' '}
                   <Link
                     to="/cookie-policy"
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold underline underline-offset-2 decoration-blue-400/40 hover:decoration-blue-500 transition-colors duration-200"
-                    onClick={handleAgree}
+                    className="text-white hover:text-blue-400 font-bold underline underline-offset-4 decoration-slate-600 hover:decoration-blue-400/50 transition-all duration-300"
                   >
                     Cookie Policy
                   </Link>{' '}
@@ -129,14 +131,17 @@ const CookieConsent: React.FC = () => {
               </div>
             </div>
 
-            {/* I Agree button */}
-            <div className="mt-5">
+            {/* I Agree button - Vibrant and large */}
+            <div className="mt-10">
               <button
                 onClick={handleAgree}
-                className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-emerald-500 text-white font-bold text-sm uppercase tracking-wider shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full py-4 px-8 rounded-2xl bg-gradient-to-r from-[#059669] to-[#10b981] hover:from-[#10b981] hover:to-[#34d399] text-white font-black text-[16px] uppercase tracking-[0.15em] shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:shadow-[0_15px_40px_rgba(16,185,129,0.4)] transition-all duration-500 hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-center group"
                 id="cookie-consent-agree"
               >
-                I Agree
+                <span>I Agree</span>
+                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
               </button>
             </div>
           </div>

@@ -7,7 +7,7 @@ interface FAQ {
     a: string;
 }
 
-const defaultFaqs: FAQ[] = [
+export const defaultFaqs: FAQ[] = [
     { q: "Do I need an appointment to visit VisayasMed Hospital?", a: "Walk-ins are welcome for emergency cases and urgent care. However, we recommend scheduling an appointment in advance for non-emergency consultations to minimize waiting time and ensure dedicated care. You can call us at (+32) 253-1901 or use our online booking system." },
     { q: "What should I bring for my first appointment?", a: "Please bring valid government-issued ID, health insurance card (if applicable), any relevant medical records, prescription list, and a list of any allergies. Patient intake forms are available online and at our reception desk." },
     { q: "What are your hospital hours?", a: "VisayasMed Hospital operates 24/7 for emergency services. General consultation hours are Monday-Friday 8 AM - 6 PM, Saturday 8 AM - 4 PM. Closed on Sundays and public holidays. Specific departments may have varying hours." },

@@ -17,12 +17,12 @@ const ChatBot: React.FC = () => {
           position: fixed;
           bottom: 2rem;
           right: 2rem;
-          width: 90px;
-          height: 90px;
-          background: transparent;
+          width: 60px;
+          height: 60px;
+          background: linear-gradient(135deg, #0088b4 0%, #00a8e8 100%);
           border: none;
-          border-radius: 12px;
-          box-shadow: none;
+          border-radius: 50%;
+          box-shadow: 0 4px 12px rgba(0, 136, 180, 0.4);
           cursor: pointer;
           z-index: 1000;
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -93,7 +93,7 @@ const ChatBot: React.FC = () => {
         }
 
         @media (max-width: 640px) {
-          .chatbot-button { bottom: 1.5rem; right: 1.5rem; width: 75px; height: 75px; }
+          .chatbot-button { bottom: 1.5rem; right: 1.5rem; width: 50px; height: 50px; }
           .chatbot-message-bubble { bottom: 7rem; right: 1.5rem; max-width: 150px; font-size: 12px; }
         }
       `}</style>
@@ -113,11 +113,9 @@ const ChatBot: React.FC = () => {
             <path d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
-          <img
-            src="/avatar.png"
-            alt="MedHelper Chat Assistant"
-            style={{ width: '90px', height: '90px', borderRadius: '12px', objectFit: 'contain' }}
-          />
+          <svg className="w-8 h-8" fill="none" stroke="white" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ width: '32px', height: '32px' }}>
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
         )}
       </button>
 

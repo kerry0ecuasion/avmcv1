@@ -18,15 +18,20 @@ const SYSTEM_PROMPT =
   'Provide concise, accurate information about hospital services, departments, schedules, locations, ' +
   'admission procedures, and general guidance. ' +
   'Do NOT provide medical diagnosis, treatment recommendations, or medication advice. ' +
-  'If asked about symptoms or treatments, politely redirect the user to consult a licensed physician.';
+  'If asked about symptoms or treatments, politely redirect the user to consult a licensed physician. ' +
+  'Rely strictly on the Additional Context provided below to answer user questions. If the answer is not found in the context, politely inform the user that you do not have that specific information and recommend they contact the hospital directly.';
 
 app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
+  const { message, context } = req.body;
   const provider = req.query.provider || (OPENAI_API_KEY ? 'openai' : 'gemini');
 
   if (!message) {
     return res.status(400).json({ error: 'Message is required.' });
   }
+
+  const finalPrompt = context 
+    ? `${SYSTEM_PROMPT}\n\nAdditional Context from Website (Use this information to answer if relevant):\n${context}`
+    : SYSTEM_PROMPT;
 
   try {
     if (provider === 'gemini') {
@@ -44,7 +49,7 @@ app.post('/api/chat', async (req, res) => {
             {
               parts: [
                 {
-                  text: `${SYSTEM_PROMPT}\n\nUser: ${message}`,
+                  text: `${finalPrompt}\n\nUser: ${message}`,
                 },
               ],
             },
@@ -80,7 +85,7 @@ app.post('/api/chat', async (req, res) => {
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
           messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'system', content: finalPrompt },
             { role: 'user', content: message },
           ],
           temperature: 0.7,
