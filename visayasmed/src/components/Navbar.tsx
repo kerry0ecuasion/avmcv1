@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
-      ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20 py-3'
+      ? 'bg-black/30 backdrop-blur-xl shadow-lg shadow-black/20 py-3'
       : 'bg-transparent py-5'
       }`}>
       {/* Subtle gradient line at top */}
@@ -91,16 +91,16 @@ const Navbar: React.FC = () => {
             <div className="absolute -inset-1 bg-blue-500/20 rounded-full blur-md opacity-0 hover:opacity-100 transition-opacity duration-300" />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 bg-clip-text text-transparent leading-tight">
+            <span className="font-display font-bold text-lg text-white leading-tight">
               VisayasMed
             </span>
-            <span className="text-[10px] font-medium tracking-[0.2em] text-gray-400 dark:text-gray-500 uppercase">Hospital</span>
+            <span className="text-[10px] font-medium tracking-[0.2em] text-white/60 uppercase">Hospital</span>
           </div>
         </Link>
 
         {/* Mobile menu toggle */}
         <button
-          className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -132,8 +132,8 @@ const Navbar: React.FC = () => {
                     onClick={() => handleNavClick(item)}
                     className={`relative text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer
                       px-4 py-2.5 rounded-xl flex items-center gap-1 ${isActive(item)
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                        ? 'text-blue-400'
+                        : 'text-white hover:text-blue-300'
                       }`}
                   >
                     <span className={`inline-block transition-all duration-300 ${isActive(item) ? 'scale-105' : 'group-hover:scale-105'}`}>
@@ -151,7 +151,7 @@ const Navbar: React.FC = () => {
 
                     {/* Hover glow */}
                     {!isActive(item) && (
-                      <span className="absolute inset-0 rounded-xl bg-gray-100/0 dark:bg-gray-800/0 group-hover:bg-gray-100/80 dark:group-hover:bg-gray-800/50 transition-all duration-300 -z-10" />
+                      <span className="absolute inset-0 rounded-xl bg-white/0 group-hover:bg-white/10 transition-all duration-300 -z-10" />
                     )}
                   </Link>
 
@@ -188,12 +188,12 @@ const Navbar: React.FC = () => {
                   animation: showNav ? `stagger-nav 0.5s ease-out ${index * 0.08}s forwards` : 'none',
                   opacity: showNav ? 1 : 0,
                 }}
-                className={`relative text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer group
-                  px-4 py-2.5 rounded-xl transition-colors ${isActive(item)
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : 'text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                  }
-                `}
+                 className={`relative text-[13px] font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer group
+                   px-4 py-2.5 rounded-xl transition-colors ${isActive(item)
+                     ? 'text-blue-400'
+                     : 'text-white hover:text-blue-300'
+                   }
+                 `}
               >
                 <span className={`inline-block transition-all duration-300 ${isActive(item) ? 'scale-105' : 'group-hover:scale-105'}`}>
                   {item.label}
@@ -206,7 +206,7 @@ const Navbar: React.FC = () => {
 
                 {/* Hover glow effect */}
                 {!isActive(item) && (
-                  <span className="absolute inset-0 rounded-xl bg-gray-100/0 dark:bg-gray-800/0 group-hover:bg-gray-100/80 dark:group-hover:bg-gray-800/50 transition-all duration-300 -z-10" />
+                  <span className="absolute inset-0 rounded-xl bg-white/0 group-hover:bg-white/10 transition-all duration-300 -z-10" />
                 )}
               </Link>
             );
@@ -232,7 +232,7 @@ const Navbar: React.FC = () => {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="ml-3 p-2.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-amber-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110 hover:rotate-12 flex items-center justify-center group relative"
+            className="ml-3 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:rotate-12 flex items-center justify-center group relative"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
