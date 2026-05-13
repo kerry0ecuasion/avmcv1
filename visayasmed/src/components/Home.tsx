@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import Footer from "./Footer";
 import NewsCarousel from "./NewsCarousel";
+import QuickLinks from "./QuickLinks";
 import { newsService, pageService } from "../utils/dataService";
 
 /* ─── Animated Heartbeat SVG ─── */
@@ -200,7 +201,7 @@ const Home: React.FC = () => {
                 {/* ═══════════════════════════════════════════════════
                     ─── HERO SECTION ───
                    ═══════════════════════════════════════════════════ */}
-                <section id="home" className="relative min-h-[70vh] sm:min-h-[80vh] flex items-center overflow-hidden">
+                <section id="home" className="relative w-full h-[50vh] sm:h-[60vh] md:h-screen flex items-center overflow-hidden">
                     {/* Background with parallax-like zoom */}
                     <div className="absolute inset-0 bg-gray-900 pointer-events-none">
                         {heroImages.map((img, idx) => (
@@ -209,104 +210,22 @@ const Home: React.FC = () => {
                                 src={img}
                                 alt="VisayasMed Hospital"
                                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                                    idx === currentHeroSlide ? "opacity-100 animate-slow-zoom" : "opacity-0"
+                                    idx === currentHeroSlide ? "opacity-100" : "opacity-0"
                                 }`}
                             />
                         ))}
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/80 to-gray-900/40 z-10" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-gray-900/20 z-10" />
-                        {/* Animated color wash */}
-                        <div className="absolute inset-0 z-10">
-                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/15 via-transparent to-cyan-600/10 animate-morph-gradient" />
-                        </div>
                     </div>
 
-                    {/* Floating luminous orbs */}
-                    <div className="absolute top-20 right-10 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl animate-float-slow pointer-events-none" />
-                    <div className="absolute bottom-20 left-10 w-64 h-64 bg-purple-500/15 rounded-full blur-2xl animate-float-slow pointer-events-none" style={{ animationDelay: '3s' }} />
-                    <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-cyan-500/10 rounded-full blur-xl animate-float-slow pointer-events-none" style={{ animationDelay: '6s' }} />
-
-                    {/* Animated particles */}
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        {[...Array(15)].map((_, i) => (
-                            <div
-                                key={i}
-                                className="absolute w-1 h-1 bg-white rounded-full animate-float"
-                                style={{
-                                    left: `${Math.random() * 100}%`,
-                                    top: `${Math.random() * 100}%`,
-                                    animationDelay: `${Math.random() * 5}s`,
-                                    animationDuration: `${4 + Math.random() * 4}s`,
-                                    opacity: 0.2 + Math.random() * 0.3,
-                                }}
-                            />
-                        ))}
-                    </div>
-
-                    {/* Hero Content */}
-                    <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-                        <div className="max-w-2xl">
-                            {/* Badge */}
-                            <div className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-xl text-white px-5 py-2 rounded-full text-xs font-semibold tracking-wider uppercase mb-5 border border-white/20 shadow-xl animate-fadeDown hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                                <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400 shadow-lg shadow-green-400/50" />
-                                </span>
-                                {homeContent?.heroBadge || "Trusted Since 1955"}
-                            </div>
-
-                            {/* Main heading */}
-                            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-5 leading-[1.1] animate-fadeUp whitespace-pre-line">
-                                {homeContent?.heroHeading1 || "Your Health,"}{" "}
-                                <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent animate-text-shimmer bg-[length:200%_auto] block sm:inline">
-                                    {homeContent?.heroHeading2 || "Our Priority"}
-                                </span>
+                    {/* Bottom Hero Content */}
+                    <div className="absolute bottom-8 sm:bottom-16 md:bottom-24 w-full px-6 sm:px-12 lg:px-20 z-10 pointer-events-none flex flex-col items-center text-center">
+                        <div className="max-w-5xl w-full pointer-events-auto" style={{ filter: 'drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.9)) drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.8))' }}>
+                            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight tracking-tight">
+                                <span className="bg-gradient-to-r from-blue-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">VisayasMed Hospital</span>
+                                <br className="hidden md:block" /> offers comprehensive, patient-centered medical care in Cebu City.
                             </h1>
-
-                            <p className="text-sm sm:text-base text-gray-200/90 mb-6 sm:mb-7 leading-relaxed max-w-xl animate-fadeUp font-light whitespace-pre-line" style={{ animationDelay: '0.2s' }}>
-                                {homeContent?.heroSubheading || "Delivering compassionate, world-class healthcare to the Visayas region with modern facilities and expert medical professionals."}
+                            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/95 font-medium leading-relaxed max-w-3xl mx-auto tracking-wide">
+                                With nearly 70 years of experience, we provide advanced facilities and expert doctors for your health and well-being.
                             </p>
-
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap gap-4 sm:gap-6 animate-fadeUp" style={{ animationDelay: '0.4s' }}>
-                                <a
-                                    href="/doctors"
-                                    className="group btn-premium px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 hover:from-blue-500 hover:via-cyan-500 hover:to-blue-600 text-white font-bold text-xs sm:text-sm tracking-wider uppercase rounded-full shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105 transition-all duration-500"
-                                >
-                                    Find a Doctor
-                                    <svg className="inline-block w-5 h-5 ml-2 -mt-0.5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </a>
-                                <a
-                                    href="/services"
-                                    className="group px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-lg border-2 border-white/20 text-white font-semibold text-xs sm:text-sm tracking-wider uppercase rounded-full hover:bg-white/20 hover:scale-105 hover:border-white/40 transition-all duration-500"
-                                >
-                                    Our Services
-                                    <svg className="inline-block w-5 h-5 ml-2 -mt-0.5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </a>
-                            </div>
-
-                            {/* Heartbeat line divider */}
-                            <div className="mt-6 text-blue-400/40 max-w-xs animate-fadeUp" style={{ animationDelay: '0.5s' }}>
-                                <HeartbeatLine />
-                            </div>
-
-                            {/* Trust indicators */}
-                            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-2 animate-fadeUp" style={{ animationDelay: '0.6s' }}>
-                                {[
-                                    { svg: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, text: "Always Open" },
-                                    { svg: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/></svg>, text: "150+ Specialists" },
-                                    { svg: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>, text: "70+ Years" }
-                                ].map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-3 text-white/70 hover:text-white transition-colors duration-300 group">
-                                        <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">{item.svg}</div>
-                                        <span className="text-sm sm:text-base font-medium">{item.text}</span>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
 
@@ -350,17 +269,11 @@ const Home: React.FC = () => {
                                 />
                             ))}
                         </div>
-                        {/* Scroll pill */}
-                        <div className="hidden sm:flex flex-col items-center gap-1 animate-bounce-slow">
-                            <span className="text-white/40 text-[10px] uppercase tracking-widest font-medium">Scroll</span>
-                            <div className="w-6 h-10 border-2 border-white/25 rounded-full flex items-start justify-center p-1.5 hover:border-white/40 transition-colors duration-300">
-                                <div className="w-1.5 h-3 bg-white/50 rounded-full animate-[float_2s_ease-in-out_infinite]" />
-                            </div>
-                        </div>
+
                     </div>
                 </section>
 
-
+                <QuickLinks />
 
                 {/* ═══════════════════════════════════════════════════
                     ─── NEWS & EVENTS SECTION ───
@@ -485,8 +398,49 @@ const Home: React.FC = () => {
                         </div>
                     </div>
                 </section>
+                {/* ═══════════════════════════════════════════════════
+                    ─── NEWS & UPDATES SECTION ───
+                   ═══════════════════════════════════════════════════ */}
+                <section className="py-16 sm:py-24 bg-slate-50 dark:bg-gray-950">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        {/* Header */}
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 sm:mb-12 gap-4">
+                            <h2 className="text-3xl sm:text-4xl font-display font-bold text-blue-700 dark:text-blue-400">
+                                News & Updates
+                            </h2>
+                            <Link to="/news" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors shadow-md">
+                                See all updates
+                            </Link>
+                        </div>
 
-
+                        {/* Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {newsItems.slice(0, 3).map((item, idx) => (
+                                <div key={idx} className="flex flex-col group bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800">
+                                    <div className="w-full aspect-[16/10] overflow-hidden">
+                                        <img src={item.image || "/w1.jpg"} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    </div>
+                                    <div className="p-6 flex flex-col flex-1">
+                                        <h3 className="text-[17px] font-bold text-blue-800 dark:text-blue-300 mb-1.5 leading-snug group-hover:text-blue-600 transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-[11px] text-blue-500 dark:text-blue-400 mb-3 font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                            {item.date}
+                                        </p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-5 line-clamp-3 leading-relaxed flex-1">
+                                            {(item as any).description || (item.title.length > 30 ? `VisayasMed continues to advance its medical capabilities with ${item.title.toLowerCase()}...` : "Pioneering medical innovation with purpose. VisayasMed makes its mark in the healthcare landscape.")}
+                                        </p>
+                                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-wider hover:text-blue-800 dark:hover:text-blue-300 transition-colors mt-auto group/link">
+                                            Read article
+                                            <svg className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
 
                 {/* ═══════════════════════════════════════════════════

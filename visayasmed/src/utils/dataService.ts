@@ -248,52 +248,60 @@ export const serviceService = {
     }
 };
 
-// NEWS
+// NEWS AND EVENTS
 export const newsService = {
     async getNews() {
         try {
-            const q = query(collection(db, "news"), orderBy("order", "asc"));
+            const q = query(collection(db, "newsAndEvents"), orderBy("createdAt", "desc"));
             const snapshot = await withTimeout(getDocs(q));
             return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error) {
-            console.warn("Error getting news (using empty):", error instanceof Error ? error.message : error);
+            console.warn("Error getting newsAndEvents:", error instanceof Error ? error.message : error);
             return [];
         }
     },
     async addNews(data: any, imageFile?: File) {
         try {
-            let imageUrl = data.image || "";
+            let imageUrl = data.imageUrl || "";
             if (imageFile) {
-                const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
+                const storageRef = ref(storage, `newsAndEvents/${Date.now()}-${imageFile.name}`);
                 await uploadBytes(storageRef, imageFile);
                 imageUrl = await getDownloadURL(storageRef);
             }
-            const docRef = await addDoc(collection(db, "news"), { ...data, image: imageUrl, createdAt: new Date() });
+            const docRef = await addDoc(collection(db, "newsAndEvents"), { 
+                ...data, 
+                imageUrl, 
+                createdAt: new Date() 
+            });
             return docRef.id;
         } catch (error) {
-            console.error("Error adding news:", error);
+            console.error("Error adding newsAndEvents:", error);
             throw error;
         }
     },
     async updateNews(id: string, data: any, imageFile?: File) {
         try {
-            let imageUrl = data.image;
+            let imageUrl = data.imageUrl;
             if (imageFile) {
-                const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
+                const storageRef = ref(storage, `newsAndEvents/${Date.now()}-${imageFile.name}`);
                 await uploadBytes(storageRef, imageFile);
                 imageUrl = await getDownloadURL(storageRef);
             }
-            await updateDoc(doc(db, "news", id), { ...data, ...(imageFile && { image: imageUrl }), updatedAt: new Date() });
+            await updateDoc(doc(db, "newsAndEvents", id), { 
+                ...data, 
+                ...(imageFile && { imageUrl }), 
+                updatedAt: new Date() 
+            });
         } catch (error) {
-            console.error("Error updating news:", error);
+            console.error("Error updating newsAndEvents:", error);
             throw error;
         }
     },
     async deleteNews(id: string) {
         try {
-            await deleteDoc(doc(db, "news", id));
+            await deleteDoc(doc(db, "newsAndEvents", id));
         } catch (error) {
-            console.error("Error deleting news:", error);
+            console.error("Error deleting newsAndEvents:", error);
             throw error;
         }
     }
@@ -411,6 +419,45 @@ export const faqsService = {
             await deleteDoc(doc(db, "faqs", id));
         } catch (error) {
             console.error("Error deleting faq:", error);
+            throw error;
+        }
+    }
+};
+
+// INQUIRIES
+export const inquiriesService = {
+    async getInquiries() {
+        try {
+            const q = query(collection(db, "inquiries"), orderBy("createdAt", "desc"));
+            const snapshot = await withTimeout(getDocs(q));
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.warn("Error getting inquiries (using empty):", error instanceof Error ? error.message : error);
+            return [];
+        }
+    },
+    async addInquiry(data: any) {
+        try {
+            const docRef = await addDoc(collection(db, "inquiries"), { ...data, status: "unread", createdAt: new Date() });
+            return docRef.id;
+        } catch (error) {
+            console.error("Error adding inquiry:", error);
+            throw error;
+        }
+    },
+    async updateInquiryStatus(id: string, status: string) {
+        try {
+            await updateDoc(doc(db, "inquiries", id), { status, updatedAt: new Date() });
+        } catch (error) {
+            console.error("Error updating inquiry status:", error);
+            throw error;
+        }
+    },
+    async deleteInquiry(id: string) {
+        try {
+            await deleteDoc(doc(db, "inquiries", id));
+        } catch (error) {
+            console.error("Error deleting inquiry:", error);
             throw error;
         }
     }

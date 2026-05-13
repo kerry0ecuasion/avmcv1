@@ -1,67 +1,97 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { newsService } from "../../utils/dataService";
 
 interface NewsItem {
     id: string;
+    category: string;
     title: string;
     description: string;
-    image: string;
-    link: string;
     date: string;
-    order: number;
+    sourceUrl: string;
+    sourceName: string;
+    imageUrl: string;
+    isFeatured: boolean;
+    isActive: boolean;
+    createdAt?: any;
 }
 
 type FormData = {
+    category: string;
     title: string;
     description: string;
-    link: string;
     date: string;
+    sourceUrl: string;
+    sourceName: string;
+    imageUrl: string;
+    isFeatured: boolean;
+    isActive: boolean;
 };
 
-const emptyForm: FormData = { title: "", description: "", link: "", date: "" };
+const emptyForm: FormData = { 
+    category: "hospital-news", 
+    title: "", 
+    description: "", 
+    date: "", 
+    sourceUrl: "", 
+    sourceName: "", 
+    imageUrl: "", 
+    isFeatured: false, 
+    isActive: true 
+};
+
+const categories = [
+    { id: "hospital-news", label: "Hospital Announcements" },
+    { id: "health-tips", label: "Health Tips & Wellness" },
+    { id: "community-events", label: "Community Outreach" },
+    { id: "screenings", label: "Health Screening Schedule" },
+    { id: "seminars", label: "Public Health Seminars" }
+];
 
 /* ── Live card preview ──────────────────────────────────────────── */
-const CardPreview: React.FC<{ data: FormData }> = ({ data }) => (
-    <div className="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg overflow-hidden select-none">
-        {data.date && (
-            <div className="px-5 pt-5 pb-0">
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-500 dark:text-blue-400">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="uppercase tracking-wide">{data.date || "Date"}</span>
-                </span>
+const CardPreview: React.FC<{ data: FormData }> = ({ data }) => {
+    let badgeColor = "bg-blue-500";
+    let badgeLabel = "Hospital News";
+    if (data.category === "health-tips") { badgeColor = "bg-green-500"; badgeLabel = "Health Tips"; }
+    if (data.category === "community-events") { badgeColor = "bg-purple-500"; badgeLabel = "Community Event"; }
+    if (data.category === "screenings") { badgeColor = "bg-red-500"; badgeLabel = "Health Screening"; }
+    if (data.category === "seminars") { badgeColor = "bg-orange-500"; badgeLabel = "Seminar"; }
+
+    return (
+        <div className="rounded-2xl bg-[#0f172a] text-white border border-gray-700 shadow-lg overflow-hidden select-none flex flex-col h-full">
+            <div className="w-full aspect-[16/10] bg-gray-800 relative">
+                {data.imageUrl ? (
+                    <img src={data.imageUrl} className="w-full h-full object-cover" alt="" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500">No Image</div>
+                )}
+                <div className={`absolute top-4 left-4 px-3 py-1 text-xs font-bold uppercase rounded-full text-white ${badgeColor}`}>
+                    {badgeLabel}
+                </div>
             </div>
-        )}
-        <div className="flex flex-col flex-1 p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-white text-sm leading-snug mb-2 line-clamp-2">
-                {data.title || <span className="text-gray-400 italic">News title…</span>}
-            </h3>
-            {data.description && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-3 mb-3">
-                    {data.description}
+            
+            <div className="flex flex-col flex-1 p-5">
+                <h3 className="font-bold text-white text-lg leading-snug mb-2 line-clamp-2">
+                    {data.title || <span className="text-gray-500 italic">News title…</span>}
+                </h3>
+                <p className="text-sm text-gray-300 leading-relaxed line-clamp-2 mb-3">
+                    {data.description || <span className="text-gray-500 italic">Description…</span>}
                 </p>
-            )}
-            <div className="mt-auto">
-                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-700/30">
-                    Read More
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                </span>
+                
+                <div className="text-xs text-gray-400 mb-4 space-y-1">
+                    {data.date && <p>Date: {data.date}</p>}
+                    {data.sourceName && <p>Source: {data.sourceName}</p>}
+                </div>
+                
+                <div className="mt-auto">
+                    <span className="inline-flex items-center gap-1.5 font-bold text-blue-400">
+                        Read More <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </span>
+                </div>
             </div>
         </div>
-        <div className="h-[3px] bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600" />
-    </div>
-);
-
-/* ── Drag handle icon ───────────────────────────────────────────── */
-const DragHandle: React.FC = () => (
-    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M7 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM17 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
-    </svg>
-);
+    );
+};
 
 /* ── Main component ─────────────────────────────────────────────── */
 const NewsManager: React.FC = () => {
@@ -71,19 +101,14 @@ const NewsManager: React.FC = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState<FormData>(emptyForm);
     const [saving, setSaving] = useState(false);
-    const [dragOverId, setDragOverId] = useState<string | null>(null);
-    const dragItem = useRef<string | null>(null);
 
     useEffect(() => { load(); }, []);
 
     const load = async () => {
         setLoading(true);
         try {
-            const data = await Promise.race([
-                newsService.getNews(),
-                new Promise<any[]>((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000))
-            ]);
-            setItems((data as NewsItem[]).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+            const data = await newsService.getNews();
+            setItems(data as NewsItem[]);
         } catch {
             setItems([]);
         } finally {
@@ -93,7 +118,17 @@ const NewsManager: React.FC = () => {
 
     const openAdd = () => { setFormData(emptyForm); setEditingId(null); setShowModal(true); };
     const openEdit = (item: NewsItem) => {
-        setFormData({ title: item.title, description: item.description ?? "", link: item.link ?? "", date: item.date ?? "" });
+        setFormData({ 
+            category: item.category || "hospital-news",
+            title: item.title || "", 
+            description: item.description || "", 
+            date: item.date || "",
+            sourceUrl: item.sourceUrl || "",
+            sourceName: item.sourceName || "",
+            imageUrl: item.imageUrl || "",
+            isFeatured: item.isFeatured || false,
+            isActive: item.isActive ?? true,
+        });
         setEditingId(item.id);
         setShowModal(true);
     };
@@ -104,14 +139,15 @@ const NewsManager: React.FC = () => {
         setSaving(true);
         try {
             const payload = {
+                category: formData.category,
                 title: formData.title.trim(),
                 description: formData.description.trim(),
-                link: formData.link.trim(),
                 date: formData.date.trim(),
-                image: "",
-                order: editingId
-                    ? (items.find(i => i.id === editingId)?.order ?? items.length + 1)
-                    : items.length + 1,
+                sourceUrl: formData.sourceUrl.trim(),
+                sourceName: formData.sourceName.trim(),
+                imageUrl: formData.imageUrl.trim(),
+                isFeatured: formData.isFeatured,
+                isActive: formData.isActive
             };
             if (editingId) {
                 await newsService.updateNews(editingId, payload);
@@ -134,27 +170,6 @@ const NewsManager: React.FC = () => {
         await load();
     };
 
-    /* ── Drag-to-reorder ─────────────────────────────────────────── */
-    const handleDragStart = (id: string) => { dragItem.current = id; };
-    const handleDragOver = (e: React.DragEvent, id: string) => {
-        e.preventDefault();
-        setDragOverId(id);
-    };
-    const handleDrop = async (targetId: string) => {
-        if (!dragItem.current || dragItem.current === targetId) { setDragOverId(null); return; }
-        const fromIdx = items.findIndex(i => i.id === dragItem.current);
-        const toIdx = items.findIndex(i => i.id === targetId);
-        const reordered = [...items];
-        const [moved] = reordered.splice(fromIdx, 1);
-        reordered.splice(toIdx, 0, moved);
-        const updated = reordered.map((item, idx) => ({ ...item, order: idx + 1 }));
-        setItems(updated);
-        setDragOverId(null);
-        dragItem.current = null;
-        // Persist new order
-        await Promise.all(updated.map(item => newsService.updateNews(item.id, { order: item.order })));
-    };
-
     const field = (label: string, node: React.ReactNode, required = false) => (
         <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
@@ -171,9 +186,9 @@ const NewsManager: React.FC = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">News &amp; Events</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">News &amp; Events Manager</h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Manage carousel cards — drag rows to reorder
+                        Manage articles across all categories
                     </p>
                 </div>
                 <button
@@ -198,74 +213,35 @@ const NewsManager: React.FC = () => {
                 </div>
             ) : items.length === 0 ? (
                 <div className="text-center py-20 text-gray-400 dark:text-gray-500">
-                    <svg className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V7a2 2 0 012-2h4l2-3h4l2 3h4a2 2 0 012 2v11a2 2 0 01-2 2z" />
-                    </svg>
-                    <p className="font-medium">No news items yet.</p>
-                    <p className="text-sm mt-1">Click "Add News Item" to get started.</p>
+                    <p className="font-medium">No news items found.</p>
                 </div>
             ) : (
-                <div className="space-y-3">
-                    {items.map((item, idx) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {items.map((item) => (
                         <div
                             key={item.id}
-                            draggable
-                            onDragStart={() => handleDragStart(item.id)}
-                            onDragOver={(e) => handleDragOver(e, item.id)}
-                            onDrop={() => handleDrop(item.id)}
-                            onDragEnd={() => setDragOverId(null)}
-                            className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing ${
-                                dragOverId === item.id
-                                    ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20 scale-[1.01]"
-                                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600"
-                            }`}
+                            className="flex flex-col p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
                         >
-                            {/* Order + drag handle */}
-                            <div className="flex items-center gap-2 pt-1 flex-shrink-0">
-                                <DragHandle />
-                                <span className="text-xs font-bold text-gray-400 w-5 text-center">{idx + 1}</span>
+                            {item.imageUrl && (
+                                <img src={item.imageUrl} alt="" className="w-full h-32 object-cover rounded-lg mb-3" />
+                            )}
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">{item.category}</span>
+                                {item.isFeatured && <span className="text-xs font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full">Featured</span>}
                             </div>
-
-                            {/* Info */}
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                    {item.date && (
-                                        <span className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wide">
-                                            {item.date}
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="font-semibold text-gray-800 dark:text-white text-sm leading-snug line-clamp-1">{item.title}</p>
-                                {item.description && (
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2 leading-relaxed">{item.description}</p>
-                                )}
-                                {item.link && (
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-xs text-sky-500 hover:text-sky-600 mt-1 transition-colors"
-                                        onClick={e => e.stopPropagation()}
-                                    >
-                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                        </svg>
-                                        {item.link.length > 50 ? item.link.slice(0, 50) + "…" : item.link}
-                                    </a>
-                                )}
-                            </div>
-
-                            {/* Actions */}
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <p className="font-semibold text-gray-800 dark:text-white text-sm leading-snug line-clamp-2 mb-1">{item.title}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">{item.date} • {item.sourceName}</p>
+                            
+                            <div className="mt-auto flex items-center gap-2 pt-3 border-t border-gray-100 dark:border-gray-700">
                                 <button
                                     onClick={() => openEdit(item)}
-                                    className="px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-lg transition-colors"
+                                    className="flex-1 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-lg hover:bg-blue-200 transition-colors"
                                 >
                                     Edit
                                 </button>
                                 <button
                                     onClick={() => handleDelete(item.id)}
-                                    className="px-3 py-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/50 text-red-700 dark:text-red-300 text-xs font-semibold rounded-lg transition-colors"
+                                    className="flex-1 px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-xs font-semibold rounded-lg hover:bg-red-200 transition-colors"
                                 >
                                     Delete
                                 </button>
@@ -278,25 +254,44 @@ const NewsManager: React.FC = () => {
             {/* Modal */}
             {showModal && ReactDOM.createPortal(
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                         {/* Modal header */}
                         <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
                             <h3 className="text-xl font-bold text-gray-800 dark:text-white">
                                 {editingId ? "Edit News Item" : "Add News Item"}
                             </h3>
-                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
 
-                        {/* Modal body — two-column layout */}
+                        {/* Modal body */}
                         <div className="overflow-y-auto flex-1">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
                                 {/* Left: form */}
                                 <div className="p-8 space-y-5 border-r border-gray-100 dark:border-gray-700">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Card Details</p>
+                                    <div className="flex items-center gap-4">
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={formData.isActive} onChange={e => setFormData(p => ({...p, isActive: e.target.checked}))} className="w-4 h-4 text-blue-600 rounded" />
+                                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Active (Visible)</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" checked={formData.isFeatured} onChange={e => setFormData(p => ({...p, isFeatured: e.target.checked}))} className="w-4 h-4 text-amber-500 rounded" />
+                                            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Featured Article</span>
+                                        </label>
+                                    </div>
+
+                                    {field("Category", (
+                                        <select
+                                            value={formData.category}
+                                            onChange={e => setFormData(p => ({ ...p, category: e.target.value }))}
+                                            className={inputCls}
+                                        >
+                                            {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                                        </select>
+                                    ))}
 
                                     {field("Title", (
                                         <input
@@ -304,8 +299,7 @@ const NewsManager: React.FC = () => {
                                             value={formData.title}
                                             onChange={e => setFormData(p => ({ ...p, title: e.target.value }))}
                                             className={inputCls}
-                                            placeholder="e.g. Health Awareness Month"
-                                            autoFocus
+                                            placeholder="Article headline..."
                                         />
                                     ), true)}
 
@@ -314,71 +308,76 @@ const NewsManager: React.FC = () => {
                                             value={formData.description}
                                             onChange={e => setFormData(p => ({ ...p, description: e.target.value }))}
                                             className={inputCls + " resize-none h-24"}
-                                            placeholder="Short summary shown on the card…"
+                                            placeholder="Short 2-3 sentence description..."
                                         />
                                     ))}
 
-                                    {field("Date", (
-                                        <input
-                                            type="text"
-                                            value={formData.date}
-                                            onChange={e => setFormData(p => ({ ...p, date: e.target.value }))}
-                                            className={inputCls}
-                                            placeholder="e.g. Mar 17, 2026"
-                                        />
-                                    ))}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {field("Date / Location", (
+                                            <input
+                                                type="text"
+                                                value={formData.date}
+                                                onChange={e => setFormData(p => ({ ...p, date: e.target.value }))}
+                                                className={inputCls}
+                                                placeholder="e.g. Oct 10, 2026"
+                                            />
+                                        ))}
+                                        {field("Source Name", (
+                                            <input
+                                                type="text"
+                                                value={formData.sourceName}
+                                                onChange={e => setFormData(p => ({ ...p, sourceName: e.target.value }))}
+                                                className={inputCls}
+                                                placeholder="e.g. DOH Philippines"
+                                            />
+                                        ))}
+                                    </div>
 
-                                    {field("Link URL", (
+                                    {field("Source URL", (
                                         <input
                                             type="url"
-                                            value={formData.link}
-                                            onChange={e => setFormData(p => ({ ...p, link: e.target.value }))}
+                                            value={formData.sourceUrl}
+                                            onChange={e => setFormData(p => ({ ...p, sourceUrl: e.target.value }))}
                                             className={inputCls}
-                                            placeholder="https://example.com/article"
+                                            placeholder="https://..."
+                                        />
+                                    ))}
+
+                                    {field("Image URL", (
+                                        <input
+                                            type="text"
+                                            value={formData.imageUrl}
+                                            onChange={e => setFormData(p => ({ ...p, imageUrl: e.target.value }))}
+                                            className={inputCls}
+                                            placeholder="/images/news1.jpg"
                                         />
                                     ))}
                                 </div>
 
-                                {/* Right: live preview */}
-                                <div className="p-8 bg-gray-50 dark:bg-gray-900/40">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4">Live Preview</p>
-                                    <CardPreview data={formData} />
-                                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-3 text-center italic">
-                                        This is how the card will appear in the carousel.
-                                    </p>
+                                {/* Right: preview */}
+                                <div className="p-8 bg-gray-900 hidden md:block">
+                                    <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">Website Preview</p>
+                                    <div className="w-full max-w-sm mx-auto h-[450px]">
+                                        <CardPreview data={formData} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Modal footer */}
-                        <div className="flex gap-3 px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 bg-gray-50 dark:bg-gray-800">
+                        <div className="flex gap-3 px-8 py-5 border-t border-gray-200 dark:border-gray-700 flex-shrink-0 bg-gray-50 dark:bg-gray-800 justify-end">
+                            <button
+                                onClick={closeModal}
+                                className="px-6 py-2.5 bg-white dark:bg-gray-700 hover:bg-gray-100 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-200 dark:border-gray-600 transition-colors"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 onClick={handleSave}
                                 disabled={saving}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-xl transition-colors"
+                                className="flex items-center justify-center gap-2 px-8 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-xl transition-colors"
                             >
-                                {saving ? (
-                                    <>
-                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                        </svg>
-                                        Saving…
-                                    </>
-                                ) : (
-                                    <>
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        {editingId ? "Save Changes" : "Add to Carousel"}
-                                    </>
-                                )}
-                            </button>
-                            <button
-                                onClick={closeModal}
-                                className="px-6 py-2.5 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl border border-gray-200 dark:border-gray-600 transition-colors"
-                            >
-                                Cancel
+                                {saving ? "Saving..." : "Save Article"}
                             </button>
                         </div>
                     </div>

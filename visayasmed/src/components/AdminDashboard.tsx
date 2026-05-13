@@ -14,6 +14,8 @@ import StatsManager from './AdminComponents/StatsManager';
 import FAQsManager from './AdminComponents/FAQsManager';
 import HeroCarouselManager from './AdminComponents/HeroCarouselManager';
 import AppointmentsManager from './AdminComponents/AppointmentsManager';
+import InquiriesManager from './AdminComponents/InquiriesManager';
+import { inquiriesService } from '../utils/dataService';
 
 const AdminDashboard: React.FC = () => {
     const [activeSection, setActiveSection] = useState('appointments');
@@ -22,12 +24,28 @@ const AdminDashboard: React.FC = () => {
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
+    const [pendingInquiries, setPendingInquiries] = useState(0);
+
     // Real-time pending badge
     useEffect(() => {
         const unsub = appointmentService.subscribeToAppointments((data) => {
             setPendingCount(data.filter(a => a.status === 'pending').length);
         }, (err) => console.error("Badge listener error:", err));
-        return () => unsub();
+        
+        // Polling or fetching unread inquiries (simple fetch on mount and interval)
+        const fetchInquiries = async () => {
+            try {
+                const inquiries = await inquiriesService.getInquiries();
+                setPendingInquiries(inquiries.filter((i: any) => i.status === 'unread').length);
+            } catch(e){}
+        };
+        fetchInquiries();
+        const interval = setInterval(fetchInquiries, 30000); // Check every 30s
+        
+        return () => {
+            unsub();
+            clearInterval(interval);
+        };
     }, []);
 
     const handleLogout = async () => {
@@ -47,6 +65,11 @@ const AdminDashboard: React.FC = () => {
                     id: 'appointments',
                     label: '📅 Appointments',
                     badge: pendingCount > 0 ? pendingCount : null,
+                },
+                {
+                    id: 'inquiries',
+                    label: '💬 Inquiries',
+                    badge: pendingInquiries > 0 ? pendingInquiries : null,
                 },
             ]
         },
@@ -79,6 +102,7 @@ const AdminDashboard: React.FC = () => {
         switch (activeSection) {
             case 'heroCarousel':  return <HeroCarouselManager />;
             case 'appointments':  return <AppointmentsManager />;
+            case 'inquiries':     return <InquiriesManager />;
             case 'slideshow':     return <SlideshowManager />;
             case 'doctors':       return <AdvancedContentEditor page="doctors" />;
             case 'services':      return <AdvancedContentEditor page="services" />;
@@ -111,9 +135,9 @@ const AdminDashboard: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold">VisayasMed Admin</h1>
-                        {pendingCount > 0 && (
-                            <span className="inline-flex items-center justify-center w-6 h-6 bg-red-500 text-white text-xs font-black rounded-full shadow-lg animate-pulse">
-                                {pendingCount > 99 ? '99+' : pendingCount}
+                        {(pendingCount > 0 || pendingInquiries > 0) && (
+                            <span className="inline-flex items-center justify-center px-2 py-0.5 min-w-[24px] h-6 bg-red-500 text-white text-xs font-black rounded-full shadow-lg animate-pulse">
+                                {pendingCount + pendingInquiries > 99 ? '99+' : pendingCount + pendingInquiries}
                             </span>
                         )}
                     </div>

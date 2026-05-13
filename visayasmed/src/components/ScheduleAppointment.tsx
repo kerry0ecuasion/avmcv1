@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import { doctorService } from "../utils/dataService";
 import { appointmentService } from "../utils/appointmentService";
+import { useLocation } from "react-router-dom";
 
 /* ─────────────────────────────────────────────
    Types
@@ -100,6 +101,7 @@ const ScheduleAppointment: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Step 1 state
+  const location = useLocation();
   const [doctors, setDoctors] = useState<Doctor[]>(defaultDoctors);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
 
@@ -127,11 +129,30 @@ const ScheduleAppointment: React.FC = () => {
   // Load doctors from Firebase
   useEffect(() => {
     doctorService.getDoctors().then((data) => {
-      if (data && data.length > 0) setDoctors(data as Doctor[]);
+      let loadedDoctors = defaultDoctors;
+      if (data && data.length > 0) {
+          loadedDoctors = data as Doctor[];
+          setDoctors(loadedDoctors);
+      }
+      // Check query params for pre-selection
+      const params = new URLSearchParams(location.search);
+      const doctorParam = params.get('doctor');
+      if (doctorParam) {
+          const found = loadedDoctors.find(d => d.name.toLowerCase() === doctorParam.toLowerCase());
+          if (found) {
+              setSelectedDoctor(found);
+          }
+      }
     }).catch(err => {
       console.warn("Doctors load failed, using defaults:", err instanceof Error ? err.message : err);
+      const params = new URLSearchParams(location.search);
+      const doctorParam = params.get('doctor');
+      if (doctorParam) {
+          const found = defaultDoctors.find(d => d.name.toLowerCase() === doctorParam.toLowerCase());
+          if (found) setSelectedDoctor(found);
+      }
     });
-  }, []);
+  }, [location.search]);
 
   // Scroll to top on step change
   useEffect(() => {

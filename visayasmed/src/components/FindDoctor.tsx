@@ -205,7 +205,7 @@ const FindDoctor = () => {
                 )}
 
                 {/* CTA Button */}
-                <a href="/schedule-appointment" className="block w-full py-2.5 px-4 mt-auto bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm rounded-lg transition-colors text-center shadow-sm">
+                <a href={`/schedule-appointment?doctor=${encodeURIComponent(doctor.name)}`} className="block w-full py-2.5 px-4 mt-auto bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm rounded-lg transition-colors text-center shadow-sm">
                   Schedule Appointment
                 </a>
               </div>

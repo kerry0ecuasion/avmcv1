@@ -127,10 +127,9 @@ const Services = () => {
                         const icon = MedicalIcons[iconKey] || DefaultIcon;
 
                         return (
-                            <Link
-                                to={`/services/${slug}`}
+                            <div
                                 key={service.id || service.title}
-                                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900/80 border border-gray-200/70 dark:border-gray-800/70 hover:border-blue-300 dark:hover:border-blue-700/60 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-2 animate-scaleIn cursor-pointer block no-underline"
+                                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900/80 border border-gray-200/70 dark:border-gray-800/70 hover:border-blue-300 dark:hover:border-blue-700/60 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-2 animate-scaleIn block"
                                 style={{ animationDelay: `${idx * 100}ms` }}
                             >
                                 {/* Top accent line */}
@@ -139,29 +138,33 @@ const Services = () => {
                                 {/* Hover background glow */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-blue-50/0 group-hover:from-blue-50/60 group-hover:to-sky-50/40 dark:group-hover:from-blue-950/20 dark:group-hover:to-sky-950/10 transition-all duration-500 rounded-2xl" />
 
-                                <div className="relative z-10 p-8">
-                                    {/* Icon */}
-                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-6 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
-                                        {icon}
+                                <div className="relative z-10 p-8 flex flex-col h-full">
+                                    <div className="flex-1">
+                                        {/* Icon */}
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-6 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                                            {icon}
+                                        </div>
+
+                                        {/* Title */}
+                                        <h3 className="text-xl font-bold text-black dark:text-white mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                            {service.title}
+                                        </h3>
+
+                                        {/* Description */}
+                                        <p className="text-black dark:text-gray-400 leading-relaxed text-sm mb-6 font-semibold">{service.desc}</p>
                                     </div>
 
-                                    {/* Title */}
-                                    <h3 className="text-xl font-bold text-black dark:text-white mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
-                                        {service.title}
-                                    </h3>
-
-                                    {/* Description */}
-                                    <p className="text-black dark:text-gray-400 leading-relaxed text-sm mb-6 font-semibold">{service.desc}</p>
-
-                                    {/* Learn more link */}
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
-                                        <span>Learn more</span>
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                        </svg>
+                                    {/* Action Buttons */}
+                                    <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                                        <Link to={`/services/${slug}`} className="flex-1 text-center py-2 px-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold text-sm hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                                            Learn More
+                                        </Link>
+                                        <Link to="/schedule-appointment" className="flex-1 text-center py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 transition-colors">
+                                            Schedule Appointment
+                                        </Link>
                                     </div>
                                 </div>
-                            </Link>
+                            </div>
                         );
                     })}
                 </div>

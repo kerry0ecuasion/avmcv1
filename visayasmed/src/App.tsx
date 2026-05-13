@@ -17,6 +17,7 @@ import ServiceDetailPage from './components/ServiceDetailPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import CookiePolicyPage from './components/CookiePolicyPage';
 import AppointmentPage from './components/AppointmentPage';
+import NewsEvents from './components/NewsEvents';
 import Admin from './components/Admin';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
@@ -41,6 +42,7 @@ const Layout: React.FC = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/cookie-policy" element={<CookiePolicyPage />} />
           <Route path="/schedule-appointment" element={<AppointmentPage />} />
+          <Route path="/news" element={<NewsEvents />} />
           <Route
             path="/admin"
             element={
