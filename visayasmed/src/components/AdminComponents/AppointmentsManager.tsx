@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { format, parseISO, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { appointmentService, type AppointmentData, type AppointmentStatus } from "../../utils/appointmentService";
 import { useAdminAuth } from "../../contexts/AdminAuthContext";
@@ -191,8 +192,8 @@ const AppointmentsManager: React.FC = () => {
       )}
 
       {/* Cancel inline modal */}
-      {cancelTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => { setCancelTarget(null); setCancelReason(""); }}>
+      {cancelTarget && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => { setCancelTarget(null); setCancelReason(""); }}>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700" onClick={e => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Cancel Appointment</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Please provide a reason for cancellation. This will be sent to the patient.</p>
@@ -214,7 +215,8 @@ const AppointmentsManager: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Summary Cards */}

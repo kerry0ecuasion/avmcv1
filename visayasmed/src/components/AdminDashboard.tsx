@@ -144,7 +144,7 @@ const AdminDashboard: React.FC = () => {
             <main className="flex-1 relative z-10">
                 <div className="max-w-7xl mx-auto flex gap-6 px-6 py-8">
                     <aside className="w-64 flex-shrink-0">
-                        <nav className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sticky top-8">
+                        <nav className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sticky top-8 max-h-[calc(100vh-6rem)] overflow-y-auto">
                             <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Content Manager</h3>
                             {navGroups.map(group => (
                                 <div key={group.label} className="mb-4">

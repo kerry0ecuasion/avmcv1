@@ -368,103 +368,14 @@ const Home: React.FC = () => {
                 <section id="news" aria-label="Events and News" className="reveal px-4 sm:px-6 py-10 sm:py-12">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-6">
-                            <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase text-blue-600 dark:text-blue-400 mb-2">Latest Updates</span>
-                            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white mb-3">News &amp; Events</h2>
+                            <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase text-blue-600 dark:text-blue-400 mb-2">Quick Access</span>
+                            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white mb-3">Promotions &amp; Quick Links</h2>
                             <div className="section-divider" />
                         </div>
                         <NewsCarousel items={newsItems} />
                     </div>
                 </section>
 
-                {/* ═══════════════════════════════════════════════════
-                    ─── WHY CHOOSE VISAYASMED ───
-                   ═══════════════════════════════════════════════════ */}
-                <section className="reveal px-4 sm:px-6 py-10 sm:py-12 relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-950/10 pointer-events-none" />
-                    <div className="max-w-7xl mx-auto relative">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
-                            {/* Left: Image with decorative frame */}
-                            <div className="order-2 lg:order-1">
-                                <div className="relative">
-                                    {/* Decorative accent */}
-                                    <div className="absolute -top-4 -left-4 w-24 h-24 border-t-4 border-l-4 border-blue-500/30 rounded-tl-3xl pointer-events-none" />
-                                    <div className="absolute -bottom-4 -right-4 w-24 h-24 border-b-4 border-r-4 border-blue-500/30 rounded-br-3xl pointer-events-none" />
-                                    <div className="relative rounded-2xl overflow-hidden shadow-2xl group">
-                                        <img
-                                            src="/w2.jpg"
-                                            alt="VisayasMed Hospital - Modern Healthcare Facility"
-                                            className="w-full h-52 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent" />
-                                        {/* Floating badge on image */}
-                                        <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-bold text-black dark:text-white">ISO Certified</p>
-                                                    <p className="text-[10px] text-gray-500">Quality Healthcare</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Right: Content */}
-                            <div className="order-1 lg:order-2">
-                                <div className="mb-4">
-                                    <span className="inline-block text-xs font-bold tracking-[0.25em] uppercase text-blue-600 dark:text-blue-400 mb-2">Why Choose Us</span>
-                                    <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white mb-3 whitespace-pre-line">
-                                        {homeContent?.whyChooseHeading1 || "Why Choose"}{" "}
-                                        <span className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent block sm:inline">
-                                            {homeContent?.whyChooseHeading2 || "VisayasMed?"}
-                                        </span>
-                                    </h2>
-                                    <div className="section-divider !mx-0 !ml-0" />
-                                </div>
-
-                                <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-5 whitespace-pre-line">
-                                    {homeContent?.whyChooseDescription || "At VisayasMed, we combine decades of medical expertise with cutting-edge technology to deliver exceptional healthcare. Our commitment to patient-centered care ensures you receive the highest quality medical attention."}
-                                </p>
-
-                                <div className="space-y-1">
-                                    {(homeContent?.whyChooseItems || [
-                                        { title: "70+ Years of Excellence", description: "Trusted healthcare provider serving the Visayas region since 1955" },
-                                        { title: "150+ Expert Specialists", description: "Highly qualified doctors across all major medical disciplines" },
-                                        { title: "Advanced Technology", description: "State-of-the-art medical equipment and modern facilities" },
-                                        { title: "Patient-First Approach", description: "Compassionate care tailored to your individual needs" }
-                                    ]).map((item: any, idx: number) => {
-                                        const defaultAccents = ["from-blue-500 to-blue-600", "from-emerald-500 to-teal-600", "from-violet-500 to-purple-600", "from-rose-500 to-pink-600"];
-                                        const defaultSvgs = [
-                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.87"/></svg>,
-                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M9 3h6v7l3.2 9.6A1 1 0 0117.3 21H6.7a1 1 0 01-.9-1.4L9 10V3z"/><path d="M6 9h12"/></svg>,
-                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/><polyline points="8 12 11 15 16 10"/></svg>
-                                        ];
-                                        const accent = defaultAccents[idx % defaultAccents.length];
-                                        const svg = defaultSvgs[idx % defaultSvgs.length];
-                                        const num = (idx + 1).toString().padStart(2, '0');
-                                        return (
-                                        <div key={idx} className="flex items-start gap-3 group p-3 rounded-xl hover:bg-white/60 dark:hover:bg-gray-800/40 transition-all duration-300">
-                                            <div className="flex-shrink-0 relative">
-                                                <span className="absolute -top-1 -left-1 text-[10px] font-bold text-blue-500/40 dark:text-blue-400/40 font-display">{num}</span>
-                                                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${accent} flex items-center justify-center text-white group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
-                                                    {svg}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold text-black dark:text-white text-base mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">{item.title}</h3>
-                                                <p className="text-gray-800 dark:text-gray-400 text-sm leading-relaxed">{item.description}</p>
-                                            </div>
-                                        </div>
-                                    )})}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 {/* ═══════════════════════════════════════════════════
                     ─── SERVICES BANNER ───

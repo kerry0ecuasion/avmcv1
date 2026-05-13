@@ -296,43 +296,32 @@ const DoctorManager: React.FC<DoctorManagerProps> = ({ doctors, onSave, onDelete
                                 </div>
                             </div>
                             <div>
-                                <label className={labelClass}>Qualification</label>
-                                <input type="text" value={formData.qualification} onChange={(e) => setFormData({ ...formData, qualification: e.target.value })} className={inputClass} placeholder="MD, Board Certified Cardiologist" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className={labelClass}>Experience</label>
-                                    <input type="text" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} className={inputClass} placeholder="15+ years" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Icon (emoji)</label>
-                                    <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className={inputClass} placeholder="👨‍⚕️" />
-                                </div>
-                            </div>
-                            <div>
-                                <label className={labelClass}>Languages (comma-separated)</label>
-                                <input type="text" value={formData.languages} onChange={(e) => setFormData({ ...formData, languages: e.target.value })} className={inputClass} placeholder="English, Tagalog, Cebuano" />
-                            </div>
-                            <div>
-                                <label className={labelClass}>Availability</label>
-                                <input type="text" value={formData.availability} onChange={(e) => setFormData({ ...formData, availability: e.target.value })} className={inputClass} placeholder="Mon-Fri, 9 AM - 5 PM" />
-                            </div>
-                            <div>
-                                <label className={labelClass}>Special Expertise</label>
-                                <input type="text" value={formData.specialExpertise} onChange={(e) => setFormData({ ...formData, specialExpertise: e.target.value })} className={inputClass} placeholder="Tropical cardiovascular diseases" />
-                            </div>
-                            <div>
-                                <label className={labelClass}>Achievements</label>
-                                <textarea value={formData.achievements} onChange={(e) => setFormData({ ...formData, achievements: e.target.value })} className={inputClass} rows={2} placeholder="Published 12 research papers..." />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className={labelClass}>Patients Served</label>
-                                    <input type="text" value={formData.patientsServed} onChange={(e) => setFormData({ ...formData, patientsServed: e.target.value })} className={inputClass} placeholder="5000+" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Rating (1-5)</label>
-                                    <input type="number" min={1} max={5} step={0.1} value={formData.rating} onChange={(e) => setFormData({ ...formData, rating: parseFloat(e.target.value) || 5 })} className={inputClass} />
+                                <label className={labelClass}>Available Days</label>
+                                <div className="flex flex-wrap gap-4 mt-2">
+                                    {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map(day => {
+                                        const isChecked = formData.availability.includes(day);
+                                        return (
+                                            <label key={day} className="flex items-center gap-1.5 cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={isChecked} 
+                                                    onChange={(e) => {
+                                                        let days = formData.availability ? formData.availability.split(',').map(s=>s.trim()).filter(Boolean) : [];
+                                                        if (e.target.checked) {
+                                                            if (!days.includes(day)) days.push(day);
+                                                        } else {
+                                                            days = days.filter(d => d !== day);
+                                                        }
+                                                        const week = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+                                                        days.sort((a,b) => week.indexOf(a) - week.indexOf(b));
+                                                        setFormData({ ...formData, availability: days.join(', ') });
+                                                    }}
+                                                    className="w-4 h-4 text-sky-600 rounded border-gray-300 focus:ring-sky-500 dark:bg-gray-700 dark:border-gray-600"
+                                                />
+                                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{day}</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                             </div>
                             <div className="flex gap-4 pt-4">
